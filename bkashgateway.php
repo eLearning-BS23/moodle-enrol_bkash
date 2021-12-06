@@ -43,9 +43,17 @@ global $CFG, $USER;
 <!--<body>-->
 <!--<button id="bKash_button" class="btn btn-danger">Pay With bKash</button>-->
 <!--</body>-->
-<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-<script src="https://scripts.sandbox.bka.sh/versions/1.2.0-beta/checkout/bKash-checkout-sandbox.js"></script>
+<!--<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>-->
+<!--<script src="https://scripts.sandbox.bka.sh/versions/1.2.0-beta/checkout/bKash-checkout-sandbox.js"></script>-->
+
+
 <script type="text/javascript">
+
+    define(['jquery', 'jqueryui', 'enrol_bkash/bkash_jquery', 'enrol_bkash/bkash_checkout_sandbox'], function ($, jqui, bkash_jquery, bkash_checkout_sandbox) {
+        var wwwroot = M.cfg.wwwroot;
+
+  
+
     let paymentID;
 
     let username = "sandboxTestUser";
@@ -162,5 +170,7 @@ global $CFG, $USER;
         // $('#bKash_button').removeAttr('disabled');
 
     }
+    });
+
 </script>
 <!--</html>-->
