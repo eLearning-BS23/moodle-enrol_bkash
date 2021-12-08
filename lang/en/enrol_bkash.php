@@ -108,6 +108,7 @@ $string['requestedurl_desc'] = 'Requested Url Without parameter';
 $string['course'] = 'Course';
 
 $string['bkash_username'] = 'User Name';
+$string['paywithbkash'] = 'Pay With bKash';
 $string['bkash_username_desc'] = 'BKash Merchant User Name';
 $string['bkash_password'] = 'Password';
 $string['bkash_password_desc'] = 'BKash Merchant Password';

@@ -1,178 +1,28 @@
+
 <div align="center">
+    <script src="https://scripts.sandbox.bka.sh/versions/1.2.0-beta/checkout/bKash-checkout-sandbox.js"></script>
 
 <p><?php print_string("paymentrequired") ?></p>
 <p><b><?php echo $instancename; ?></b></p>
 <p><b><?php echo get_string("cost").": {$instance->currency} {$localisedcost}"; ?></b></p>
 <p><img alt="<?php print_string('bkashaccepted', 'enrol_bkash') ?>" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjqVfXeM4v-2gJsfCe6x9Lxgy5A5QHTjSu4NWusv0Ih9sKlPMIBFBKnPx37e_fuTo7SqQ&usqp=CAU   " /></p>
 <p><?php print_string("paymentinstant") ?></p>
-<?php
 
-     $bkashurl = empty($CFG->usebkashsandbox) ? "$CFG->wwwroot/enrol/bkash/bkashgateway.php" : '$CFG->wwwroot/enrol/bkash/bkashgateway.php';
-
-?>
+    <!--<?php-->
+        <!--$bkashurl = empty($CFG->usebkashsandbox) ? "$CFG->wwwroot/enrol/bkash/bkash_checkout.js" : '$CFG->wwwroot/enrol/bkash/bkash_checkout.js';-->
+    <!--?>-->
+    <!--<form action="<?php echo $bkash ?>" method="post">-->
+    <!--<form onsubmit="return myfunction()" action="" method="post">-->
+    <form>
+        <input type="hidden" name="course_id" id="courseid" value="<?php echo $course->id; ?>" />
+        <input type="hidden" name="user_id" value="<?php echo $USER->id; ?>" />
+        <input type="hidden" name="item_name" value="<?php p($coursefullname) ?>" />
+        <input type="hidden" name="instance_id" value="<?php echo $instance->id; ?>" />
+        <input type="hidden" name="amount" value="<?php p($cost) ?>" />
 
     <button id="bKash_button" class="btn btn-danger">Pay With bKash</button>
 
-    <!--<body>-->
-    <!--<button id="bKash_button" class="btn btn-danger">Pay With bKash</button>-->
-    <!--</body>-->
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-    <script src="https://scripts.sandbox.bka.sh/versions/1.2.0-beta/checkout/bKash-checkout-sandbox.js"></script>
-    <script type="text/javascript">
-        let paymentID;
 
-        let username = "sandboxTestUser";
-        let password = "hWD@8vtzw0";
-        let app_key = "5tunt4masn6pv2hnvte1sb5n3j";
-        let app_secret = "1vggbqd4hqk9g96o9rrrp2jftvek578v7d2bnerim12a87dbrrka";
-
-        let grantTokenUrl = 'https://checkout.sandbox.bka.sh/v1.2.0-beta/checkout/token/grant';
-        let createCheckoutUrl = 'https://checkout.sandbox.bka.sh/v1.2.0-beta/checkout/payment/create';
-        let executeCheckoutUrl = 'https://checkout.sandbox.bka.sh/v1.2.0-beta/checkout/payment/execute';
-
-        $(document).ready(function () {
-            getAuthToken();
-        });
-
-        function getAuthToken() {
-            let body = {
-                "app_key": app_key,
-                "app_secret": app_secret
-            };
-
-            $.ajax({
-                url: grantTokenUrl,   // Sandbox checkout
-                headers: {
-                    "username": username,
-                    "password": password,
-                    "Content-Type": "application/json"
-                },
-                type: 'POST',
-                data: JSON.stringify(body),   //JS obj to string covert
-                success: function (result) {
-
-                    let headers = {
-                        "Content-Type": "application/json",
-                        "Authorization": result.id_token, // Contains access token
-                        "X-APP-Key": app_key
-                    };
-
-                    let request = {             //create payment API
-                        "amount": "85.50",
-                        "intent": "sale",
-                        "currency": "BDT",
-                        "merchantInvoiceNumber": "123456"
-                    };
-
-                    initBkash(headers, request);
-                },
-                error: function (error) {
-                    console.log(error);
-                }
-            });
-        }
-
-        function initBkash(headers, request) {
-            bKash.init({
-                paymentMode: 'checkout',
-                paymentRequest: request,
-
-                createRequest: function (request) {
-                    $.ajax({
-                        url: createCheckoutUrl,
-                        headers: headers,
-                        type: 'POST',
-                        contentType: 'application/json',
-                        data: JSON.stringify(request),
-                        success: function (data) {
-
-                            if (data && data.paymentID != null) {
-                                paymentID = data.paymentID;
-                                bKash.create().onSuccess(data);
-                            }
-                            else {
-                                bKash.create().onError(); // Run clean up code
-                                alert(data.errorMessage + " Tag should be 2 digit, Length should be 2 digit, Value should be number of character mention in Length, ex. MI041234 , supported tags are MI, MW, RF");
-                            }
-
-                        },
-                        error: function () {
-                            bKash.create().onError(); // Run clean up code
-                            alert(data.errorMessage);
-                        }
-                    });
-                },
-                executeRequestOnAuthorization: function () {
-                    $.ajax({
-                        url: executeCheckoutUrl + '/' + paymentID,
-                        headers: headers,
-                        type: 'POST',
-                        contentType: 'application/json',
-                        success: function (data) {
-
-                            if (data && data.paymentID != null) {
-                                // On success, perform your desired action
-                                alert('[SUCCESS] data : ' + JSON.stringify(data));
-                                window.location.href = "/success_page.html";
-
-                            } else {
-                                alert('[ERROR] data : ' + JSON.stringify(data));
-                                bKash.execute().onError();//run clean up code
-                            }
-
-                        },
-                        error: function () {
-                            alert('An alert has occurred during execute');
-                            bKash.execute().onError(); // Run clean up code
-                        }
-                    });
-                },
-                onClose: function () {
-                    alert('User has clicked the close button');
-                }
-            });
-
-            // $('#bKash_button').removeAttr('disabled');
-
-        }
-    </script>
-
-
-
-
-    <!--<form action="<?php echo $bkashurl ?>" method="post">-->
-
-<!--<input type="hidden" name="cmd" value="_xclick" />-->
-<!--<input type="hidden" name="charset" value="utf-8" />-->
-<!--<input type="hidden" name="business" value="<?php p($this->get_config('bkashbusiness'))?>" />-->
-<!--<input type="hidden" name="store_id" value="<?php p($this->get_config('sslstoreid'))?>" />-->
-<!--<input type="hidden" name="item_name" value="<?php p($coursefullname) ?>" />-->
-<!--<input type="hidden" name="item_number" value="<?php p($courseshortname) ?>" />-->
-<!--<input type="hidden" name="quantity" value="1" />-->
-<!--<input type="hidden" name="on0" value="<?php print_string("user") ?>" />-->
-<!--<input type="hidden" name="os0" value="<?php p($userfullname) ?>" />-->
-<!--<input type="hidden" name="course_id" value="<?php echo $course->id; ?>" />-->
-<!--<input type="hidden" name="user_id" value="<?php echo $USER->id; ?>" />-->
-<!--<input type="hidden" name="instance_id" value="<?php echo $instance->id; ?>" />-->
-<!--<input type="hidden" name="custom" value="<?php echo "{$USER->id}-{$course->id}-{$instance->id}" ?>" />-->
-
-<!--<input type="hidden" name="currency_code" value="<?php p($instance->currency) ?>" />-->
-<!--<input type="hidden" name="amount" value="<?php p($cost) ?>" />-->
-
-<!--<input type="hidden" name="for_auction" value="false" />-->
-<!--<input type="hidden" name="no_note" value="1" />-->
-<!--<input type="hidden" name="no_shipping" value="1" />-->
-<!--<input type="hidden" name="rm" value="2" />-->
-<!--<input type="hidden" name="cbt" value="<?php print_string("continuetocourse") ?>" />-->
-
-<!--<input type="hidden" name="first_name" value="<?php p($userfirstname) ?>" />-->
-<!--<input type="hidden" name="last_name" value="<?php p($userlastname) ?>" />-->
-<!--<input type="hidden" name="address" value="<?php p($useraddress) ?>" />-->
-<!--<input type="hidden" name="city" value="<?php p($usercity) ?>" />-->
-<!--<input type="hidden" name="email" value="<?php p($USER->email) ?>" />-->
-<!--<input type="hidden" name="country" value="<?php p($USER->country) ?>" />-->
-
-<!--<input type="submit" value="<?php print_string("sendpaymentbutton", "enrol_bkash") ?>" />-->
-
-<!--</form>-->
+        <!--<input type="submit" id="bKash_button" class="btn btn-danger" value="Pay with bkash"></input>-->
+    </form>
 </div>
