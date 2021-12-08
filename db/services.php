@@ -1,6 +1,4 @@
 <?php
-// This file is part of Moodle - http://moodle.org/
-//
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -15,18 +13,24 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * bkash enrolment plugin version specification.
+ * Web service local plugin template external functions and service definitions.
  *
- * @package    enrol_bkash
- * @copyright  2021 Brain station 23 ltd.
- * @author     Brain station 23 ltd.
+ * @package    enrol
+ * @subpackage enrol_bkash
+ * @author     Brain station 23 ltd <brainstation-23.com>
+ * @copyright  2021 Brain station 23 ltd
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
-$plugin->component = 'enrol_bkash';    // Full name of the plugin (used for diagnostics).
-$plugin->version = 2021051707;        // The current plugin version (Date: YYYYMMDDXX).
-//$plugin->release = '1.0.1';
-$plugin->requires = 2020061509;        // Requires this Moodle version.
-//$plugin->maturity = MATURITY_STABLE;
+// We defined the web service functions to install.
+$functions = array(
+    'bkash_enrolment_detail' => array(
+        'classname' => 'enrol_bkash_external',
+        'methodname' => 'enrol_bkash_checkout_info',
+        'classpath' => 'enrol/bkash/classes/externallib.php',
+        'description' => 'Returns bKash checkout information',
+        'type' => 'write',
+        'capabilities' => '',
+        'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
+    )
+);

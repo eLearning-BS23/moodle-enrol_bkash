@@ -152,7 +152,43 @@ class enrol_bkash_plugin extends enrol_plugin {
     public function enrol_page_hook(stdClass $instance) {
         global $CFG, $USER, $OUTPUT, $PAGE, $DB;
 
+
         ob_start();
+
+
+//        $PAGE->requires->js_call_amd("enrol_bkash/bkash_helper");
+        $PAGE->requires->jquery();
+        $PAGE->set_context(context_system::instance());
+        $config = get_config('enrol_bkash');
+
+
+        $courseid = $instance->courseid;
+        $currency = $instance->currency;
+        $amount = $instance->cost;
+        $timecreated = $instance->timecreated;
+        $timemodified = $instance->timemodified;
+        $userid = $USER->id;
+
+        $instance_info = [
+            'courseid' => $courseid,
+            'currency' => $currency,
+            'amount' => $amount,
+            'timecreated' => $timecreated,
+            'timemodified' => $timemodified,
+            'userid' => $userid,
+            'config' => $config
+        ];
+
+//        var_dump($instance_info); die();
+
+//        $course = $DB->get_record('course', array('course_id'=> $courseid), '*', MUST_EXIST);
+
+//        var_dump($USER->id); die();
+
+        $PAGE->requires->js_call_amd("enrol_bkash/bkash_checkout", 'setup', [$instance_info]);
+
+
+
 
         if ($DB->record_exists('user_enrolments', array('userid' => $USER->id, 'enrolid' => $instance->id))) {
             return ob_get_clean();
