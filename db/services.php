@@ -26,7 +26,7 @@
 $functions = array(
     'bkash_enrolment_detail' => array(
         'classname' => 'enrol_bkash_external',
-        'methodname' => 'enrol_bkash_checkout_info',
+        'methodname' => 'bkash_enrolment_detail',
         'classpath' => 'enrol/bkash/classes/externallib.php',
         'description' => 'Returns bKash checkout information',
         'type' => 'write',

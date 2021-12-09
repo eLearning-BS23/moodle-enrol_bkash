@@ -45,15 +45,16 @@ class enrol_bkash_external extends external_api {
  */
 
 
-public static function enrol_bkash_checkout_info_parameters()
+public static function bkash_enrolment_detail_parameters()
 {
     return new external_function_parameters (
         array(
             'courseid' => new external_value(PARAM_INT, 'Course Id', VALUE_REQUIRED),
             'userid'  => new external_value(PARAM_INT, 'User id', VALUE_REQUIRED),
-            'currency' => new external_value(PARAM_RAW, 'Currency', VALUE_REQUIRED),
-            'amount' => new external_value(PARAM_INT, 'amount', VALUE_REQUIRED),
-            'bkash_response' => new external_value(PARAM_RAW, 'response', VALUE_REQUIRED)
+            'payment_status' => new external_value(PARAM_TEXT, 'Payment Status', VALUE_REQUIRED),
+            'txn_id' => new external_value(PARAM_TEXT, 'Transaction ID', VALUE_REQUIRED),
+            'item_name' => new external_value(PARAM_TEXT, 'Item Name', VALUE_REQUIRED),
+            'instanceid'  => new external_value(PARAM_INT, 'Instance id', VALUE_REQUIRED)
             )
     );
 }
@@ -69,27 +70,56 @@ public static function enrol_bkash_checkout_info_parameters()
  * @return array
  * @throws invalid_parameter_exception
  */
-public static function enrol_bkash_checkout_info($courseid, $userid, $currency, $amount, $bkash_response)
+public static function bkash_enrolment_detail($courseid, $userid, $payment_status, $txn_id, $item_name, $instanceid)
 {
     global $DB;
 
     self::validate_parameters(
-        self::enrol_bkash_checkout_info_parameters(),
+        self::bkash_enrolment_detail_parameters(),
         array(
             'courseid' => $courseid,
             'userid' => $userid,
-            'currency' => $currency,
-            'amount' => $amount,
-            'bkash_response' => $bkash_response
+            'payment_status' => $payment_status,
+            'txn_id' => $txn_id,
+            'item_name' => $item_name,
+            'instanceid' => $instanceid,
 
         )
     );
 
-    //query function
+
+
+    $data = new stdClass();
+
+    $data->userid = $userid;
+    $data->courseid = $courseid;
+    $data->payment_status = $payment_status;
+    $data->txn_id = $txn_id;
+    $data->item_name = $item_name;
+    $data->instanceid = $instanceid;
 
 
 
-//    return $result;
+        //query function
+
+
+    $DB->insert_record("enrol_bkash_log", $data);
+
+    if($payment_status == 'complete')
+        $DB->insert_record("enrol_bkash", $data);
+
+//    $sql = 'INSERT INTO {enrol_bkash} (courseid, userid, payment_status, txn_id, item_name, instanceid) VALUES ('.$courseid.', '.$userid.', "'.$payment_status.'", "'.$txn_id.'", "'.$item_name.'", '.$instanceid.')';
+
+
+
+//    var_dump($sql); die();
+//    $DB->execute($sql, null);
+
+
+
+//    $output['key'] = 'seccess';
+//    var_dump($result); die();
+    return $output['success'] = 'data stored';
 }
 
 
@@ -97,20 +127,13 @@ public static function enrol_bkash_checkout_info($courseid, $userid, $currency, 
  * Returns description of method result value
  * @return external_description
  */
-    public static function enrol_bkash_checkout_info_returns() {
-        return new external_multiple_structure(
+    public static function bkash_enrolment_detail_returns() {
+
             new external_single_structure(
                 array(
-                    'courseid' => new external_value(PARAM_INT, 'course id', VALUE_REQUIRED),
-                    'userid' => new external_value(PARAM_INT, 'end time of a quiz', VALUE_REQUIRED),
-                    'currency' =>  new external_value(PARAM_RAW, 'end time of a quiz', VALUE_REQUIRED),
-                    'amount' => new external_value(PARAM_INT, 'end time of a quiz', VALUE_REQUIRED),
-                    'payment_status' => new external_value(PARAM_RAW, 'Payment Status', VALUE_REQUIRED),
-                    'instanceid' => new external_value(PARAM_RAW, 'Instance ID', VALUE_REQUIRED),
-                    'timeupdated' => new external_value(PARAM_RAW, 'time updated', VALUE_REQUIRED),
-                    'warnings' => new external_warnings()
+                    'success' => new external_value(PARAM_TEXT, 'success')
                 )
-            )
+
         );
     }
 }

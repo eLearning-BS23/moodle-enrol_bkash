@@ -163,19 +163,25 @@ class enrol_bkash_plugin extends enrol_plugin {
 
 
         $courseid = $instance->courseid;
+        $instanceid = $instance->id;
         $currency = $instance->currency;
         $amount = $instance->cost;
         $timecreated = $instance->timecreated;
         $timemodified = $instance->timemodified;
         $userid = $USER->id;
+        $item_name = $instance->name;
+
+//        var_dump($item_name); die();
 
         $instance_info = [
             'courseid' => $courseid,
+            'instanceid' => $instanceid,
             'currency' => $currency,
             'amount' => $amount,
             'timecreated' => $timecreated,
             'timemodified' => $timemodified,
             'userid' => $userid,
+            'item_name' => $item_name,
             'config' => $config
         ];
 
@@ -480,4 +486,70 @@ class enrol_bkash_plugin extends enrol_plugin {
         $context = context_course::instance($instance->courseid);
         return has_capability('enrol/bkash:config', $context);
     }
+
+
+    function local_lict_webservicesuite_quiztime($courseid, $attempt_start_time, $attempt_end_time){
+        global $DB;
+
+        $whereclause = local_lict_webservicesuite_generate_whereclause($courseid,$attempt_start_time, $attempt_end_time);
+
+        $sql = 'SELECT
+                MQ.course as courseid,
+                MC.fullname as coursename,
+                CONCAT(
+                    MU.firstname, " ",
+                    MU.lastname) as name,
+                MQA.quiz,
+                MQA.userid,
+                FROM_UNIXTIME(MQA.timestart) attempt_start_time,
+                FROM_UNIXTIME(MQA.timefinish) attempt_end_time,
+                CONCAT(
+                    if (timestampdiff(HOUR, FROM_UNIXTIME(MQA.timestart), FROM_UNIXTIME(MQA.timefinish)) = 0, " ", 
+                        concat(timestampdiff(HOUR, FROM_UNIXTIME(MQA.timestart), FROM_UNIXTIME(MQA.timefinish))," hours ")),
+                        
+                    if(mod(timestampdiff(MINUTE, FROM_UNIXTIME(MQA.timestart), FROM_UNIXTIME(MQA.timefinish)),60) = 0, " ", 
+                        concat (mod(timestampdiff(MINUTE, FROM_UNIXTIME(MQA.timestart), FROM_UNIXTIME(MQA.timefinish)),60), " mins ")),
+                        
+                    if(mod(timestampdiff(second, FROM_UNIXTIME(MQA.timestart), FROM_UNIXTIME(MQA.timefinish)),60) = 0, " ", 
+                        concat(mod(timestampdiff(second, FROM_UNIXTIME(MQA.timestart), FROM_UNIXTIME(MQA.timefinish)),60), " secs"))) as duration
+
+                FROM
+                    {quiz_attempts} MQA
+                    JOIN {quiz} MQ ON MQA.quiz = MQ.id
+                    JOIN {course} MC ON MQ.course = MC.id
+                    JOIN {user} MU ON MQA.userid = MU.id
+                WHERE MQA.timestart!=0 AND MQA.timefinish!=0 AND '.$whereclause;
+
+        $params = array();
+
+        if($courseid !== 0){
+            $params["courseid"] = $courseid;
+        }
+
+        if($attempt_start_time !== ""){
+            $params["attempt_start_time"] = $attempt_start_time." 00:00:00";
+        }
+
+        if($attempt_end_time !== ""){
+            $params["attempt_end_time"] = $attempt_end_time." 23:59:59";
+        }
+
+        if(count($params)>0){
+            $resultarray = $DB->get_recordset_sql($sql, $params);
+        }
+        else{
+            $resultarray = $DB->get_recordset_sql($sql);
+        }
+        $result = array();
+        foreach ($resultarray as $row) {
+            array_push($result, $row);
+        }
+        return $result;
+    }
+
+
+
+
+
+
 }

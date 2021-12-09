@@ -1,4 +1,3 @@
-
 <div align="center">
     <script src="https://scripts.sandbox.bka.sh/versions/1.2.0-beta/checkout/bKash-checkout-sandbox.js"></script>
 
@@ -13,16 +12,7 @@
     <!--?>-->
     <!--<form action="<?php echo $bkash ?>" method="post">-->
     <!--<form onsubmit="return myfunction()" action="" method="post">-->
-    <form>
-        <input type="hidden" name="course_id" id="courseid" value="<?php echo $course->id; ?>" />
-        <input type="hidden" name="user_id" value="<?php echo $USER->id; ?>" />
-        <input type="hidden" name="item_name" value="<?php p($coursefullname) ?>" />
-        <input type="hidden" name="instance_id" value="<?php echo $instance->id; ?>" />
-        <input type="hidden" name="amount" value="<?php p($cost) ?>" />
 
     <button id="bKash_button" class="btn btn-danger">Pay With bKash</button>
 
-
-        <!--<input type="submit" id="bKash_button" class="btn btn-danger" value="Pay with bkash"></input>-->
-    </form>
 </div>

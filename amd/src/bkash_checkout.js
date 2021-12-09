@@ -1,4 +1,4 @@
-define(['jquery'], function ($)
+define(['jquery',  'core/ajax'], function ($, Ajax)
 {
 
     return {
@@ -23,11 +23,16 @@ define(['jquery'], function ($)
     var currency = bkash_information.currency;
     var courseid = bkash_information.courseid;
     var userid = bkash_information.userid;
+    var instanceid = bkash_information.instanceid;
+    var item_name = bkash_information.item_name;
 
         console.log(currency);
         console.log(amount);
         console.log(courseid);
         console.log(userid);
+        console.log(instanceid);
+        console.log(item_name);
+
 
     var grantTokenUrl = 'https://checkout.sandbox.bka.sh/v1.2.0-beta/checkout/token/grant';
     var createCheckoutUrl = 'https://checkout.sandbox.bka.sh/v1.2.0-beta/checkout/payment/create';
@@ -67,6 +72,7 @@ define(['jquery'], function ($)
                     "merchantInvoiceNumber": "123456"
                 };
 
+
                 initBkash(headers, request);
             },
             error: function (error) {
@@ -92,6 +98,9 @@ define(['jquery'], function ($)
                         if (data && data.paymentID != null) {
                             paymentID = data.paymentID;
                             bKash.create().onSuccess(data);
+                            // console.log(data);
+
+
                         }
                         else {
                             bKash.create().onError(); // Run clean up code
@@ -115,13 +124,34 @@ define(['jquery'], function ($)
 
                         if (data && data.paymentID != null) {
                             // On success, perform your desired action
-                            console.log(data.paymentID);
-                            console.log(data.amount);
-                            console.log(data.currency);
+                            // console.log(data.paymentID);
+                            // console.log(data.amount);
+                            // console.log(data.currency);
 
 
+                            var wsfunction = 'enrol_bkash_bkash_enrolment_detail';
+                            var params = {
+                                'courseid' : courseid,
+                                'userid' : userid,
+                                'payment_status' : data.transactionStatus,
+                                'txn_id' : data.trxID,
+                                'item_name' : item_name,
+                                'instanceid' : instanceid
 
-                            // $bkash_enrol =
+                            };
+
+                            var request={
+                                methodname: wsfunction,
+                                args: params
+                            };
+
+
+                            Ajax.call([request])[0].done(function(data) {
+
+                            console.log(data);
+                            }).fail(Notification.exception);
+
+                            // console.log(params);
 
 
                             myobject = JSON.stringify(data);
@@ -130,6 +160,9 @@ define(['jquery'], function ($)
                             alert('[SUCCESS] data : ' + myobject);
 
                             window.location.href = "/success_page.html";
+
+
+                            // window.location.href = $(location).attr('href');
 
                         } else {
                             alert('[ERROR] data : ' + JSON.stringify(data));
