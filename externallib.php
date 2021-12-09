@@ -23,9 +23,9 @@
  */
 
 global $CFG;
+require_once($CFG->libdir . '/externallib.php');
 require_once($CFG->dirroot . "/config.php");
 require_once($CFG->dirroot . "/enrol/bkash/lib.php");
-require_once($CFG->libdir . "/externallib.php");
 
 
 
@@ -105,8 +105,9 @@ public static function bkash_enrolment_detail($courseid, $userid, $payment_statu
 
     $DB->insert_record("enrol_bkash_log", $data);
 
-    if($payment_status == 'complete')
+    if($payment_status == 'complete'){
         $DB->insert_record("enrol_bkash", $data);
+    }
 
 //    $sql = 'INSERT INTO {enrol_bkash} (courseid, userid, payment_status, txn_id, item_name, instanceid) VALUES ('.$courseid.', '.$userid.', "'.$payment_status.'", "'.$txn_id.'", "'.$item_name.'", '.$instanceid.')';
 
@@ -117,9 +118,9 @@ public static function bkash_enrolment_detail($courseid, $userid, $payment_statu
 
 
 
-//    $output['key'] = 'seccess';
-//    var_dump($result); die();
-    return $output['success'] = 'data stored';
+    $output['success'] = 'seccess';
+//    var_dump($output); die();
+    return $output;
 }
 
 
@@ -128,12 +129,10 @@ public static function bkash_enrolment_detail($courseid, $userid, $payment_statu
  * @return external_description
  */
     public static function bkash_enrolment_detail_returns() {
-
-            new external_single_structure(
-                array(
-                    'success' => new external_value(PARAM_TEXT, 'success')
-                )
-
+        return new external_single_structure(
+            array(
+                'success'=> new external_value(PARAM_TEXT, 'The user id')
+            )
         );
     }
 }
