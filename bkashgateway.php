@@ -31,24 +31,3 @@ global $CFG, $USER;
 
 
 ?>
-<!---->
-<!--<!DOCTYPE html>-->
-<!--<html lang="en">-->
-<!--<head>-->
-<!--    <meta charset="UTF-8">-->
-<!--    <title>bKash PGW Demo</title>-->
-<!--    <link rel="stylesheet" href="style.css">-->
-<!---->
-<!--</head>-->
-<!--<body>-->
-<!--<button id="bKash_button" class="btn btn-danger">Pay With bKash</button>-->
-<!--</body>-->
-<!--<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>-->
-<!--<script src="https://scripts.sandbox.bka.sh/versions/1.2.0-beta/checkout/bKash-checkout-sandbox.js"></script>-->
-
-
-<script type="text/javascript">
-
-
-</script>
-<!--</html>-->

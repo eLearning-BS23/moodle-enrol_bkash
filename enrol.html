@@ -1,5 +1,20 @@
-
 <div align="center">
+
+    <?php
+    global $DB, $USER;
+
+    if ($DB->record_exists("enrol_bkash", array("userid" => $instance_info["userid"], "courseid" => $instance_info["courseid"]))){
+
+    $plugininstance=$DB->get_record("enrol", array("id" => $instance_info["instanceid"], "enrol" => "bkash", "status" => 0));
+    $plugin = enrol_get_plugin('bkash');
+    $plugin->enrol_user($plugininstance, $USER->id, $plugininstance->roleid );
+
+
+    }
+
+
+    ?>
+
     <script src="https://scripts.sandbox.bka.sh/versions/1.2.0-beta/checkout/bKash-checkout-sandbox.js"></script>
 
 <p><?php print_string("paymentrequired") ?></p>
@@ -8,21 +23,6 @@
 <p><img alt="<?php print_string('bkashaccepted', 'enrol_bkash') ?>" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjqVfXeM4v-2gJsfCe6x9Lxgy5A5QHTjSu4NWusv0Ih9sKlPMIBFBKnPx37e_fuTo7SqQ&usqp=CAU   " /></p>
 <p><?php print_string("paymentinstant") ?></p>
 
-    <!--<?php-->
-        <!--$bkashurl = empty($CFG->usebkashsandbox) ? "$CFG->wwwroot/enrol/bkash/bkash_checkout.js" : '$CFG->wwwroot/enrol/bkash/bkash_checkout.js';-->
-    <!--?>-->
-    <!--<form action="<?php echo $bkash ?>" method="post">-->
-    <!--<form onsubmit="return myfunction()" action="" method="post">-->
-    <form>
-        <input type="hidden" name="course_id" id="courseid" value="<?php echo $course->id; ?>" />
-        <input type="hidden" name="user_id" value="<?php echo $USER->id; ?>" />
-        <input type="hidden" name="item_name" value="<?php p($coursefullname) ?>" />
-        <input type="hidden" name="instance_id" value="<?php echo $instance->id; ?>" />
-        <input type="hidden" name="amount" value="<?php p($cost) ?>" />
-
     <button id="bKash_button" class="btn btn-danger">Pay With bKash</button>
 
-
-        <!--<input type="submit" id="bKash_button" class="btn btn-danger" value="Pay with bkash"></input>-->
-    </form>
 </div>

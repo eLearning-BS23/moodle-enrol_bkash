@@ -59,7 +59,7 @@ foreach ($_POST as $key => $value) {
     $data->$key = fix_utf8($value);
 }
 
-// Check custom data requested from ssl.
+// Check custom data requested from bkash
 if (empty($_POST['value_a'])) {
     throw new moodle_exception('invalidrequest', 'core_error', '', null, 'Missing request param: custom');
 }
@@ -74,9 +74,9 @@ if (empty($custom) || count($custom) < 3) {
 $data->userid = (int)$custom[0];
 $data->courseid = (int)$custom[1];
 $data->instanceid = (int)$custom[2];
-$data->payment_currency = $data->currency;
-$data->receiver_email = $USER->email;
-$data->receiver_id = $USER->id;
+//$data->payment_currency = $data->currency;
+//$data->receiver_email = $USER->email;
+$data->userid = $USER->id;
 $data->timeupdated = time();
 
 // Check user exist or not.
