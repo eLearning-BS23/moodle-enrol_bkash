@@ -185,15 +185,8 @@ class enrol_bkash_plugin extends enrol_plugin {
             'config' => $config
         ];
 
-//        var_dump($instance_info); die();
-
-//        $course = $DB->get_record('course', array('course_id'=> $courseid), '*', MUST_EXIST);
-
-//        var_dump($USER->id); die();
 
         $PAGE->requires->js_call_amd("enrol_bkash/bkash_checkout", 'setup', [$instance_info]);
-
-
 
 
         if ($DB->record_exists('user_enrolments', array('userid' => $USER->id, 'enrolid' => $instance->id))) {

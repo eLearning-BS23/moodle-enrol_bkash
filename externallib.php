@@ -102,36 +102,21 @@ public static function bkash_enrolment_detail($courseid, $userid, $payment_statu
     //query function
     $DB->insert_record("enrol_bkash_log", $data);
 
-
-
     if($payment_status == 'complete') {
-        $DB->insert_record("enrol_bkash", $data);
 
+    // Transaction exists already
+        if ($DB->get_record("enrol_bkash", array("txn_id" => $data->txn_id))) {
+//            \enrol_bkash\util::message_bkash_error_to_admin("Transaction $data->tran_id is being repeated!", $data);
+//            throw new Exception("Transaction ID $data->txn_id is being repeated!");
+//            die();
+            $output['message'] = 'error';
+        }
+        else {
+            $DB->insert_record("enrol_bkash", $data);
+            $output['message'] = 'success';
+        }
     }
 
-//    var_dump("success"); die();
-
-
-    // Make sure this transaction doesn't exist already.
-
-//
-//        if (!$existing = $DB->get_record("enrol_bkash", array("txn_id" => $data->txn_id), "*", MUST_EXIST)) {
-//        \enrol_bkash\util::message_bkash_error_to_admin("Transaction $data->txn_id is being repeated!", $data);
-//        die;
-//    }
-//        else {
-//            $DB->insert_record("enrol_bkash", $data);
-//
-//        }
-//    }
-
-//   if($DB->get_record("enrol_bkash", array("txn_id" => $data->txn_id), "*", MUST_EXIST)) {
-//
-//
-//   }
-
-    $output['success'] = 'success';
-//    var_dump($output); die();
     return $output;
 }
 
@@ -143,7 +128,7 @@ public static function bkash_enrolment_detail($courseid, $userid, $payment_statu
     public static function bkash_enrolment_detail_returns() {
         return new external_single_structure(
             array(
-                'success'=> new external_value(PARAM_TEXT, 'The user id')
+                'message'=> new external_value(PARAM_TEXT, 'Transaction status')
             )
         );
     }

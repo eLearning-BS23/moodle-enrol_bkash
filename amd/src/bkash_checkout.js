@@ -150,7 +150,17 @@ define(['jquery', 'core/ajax'], function($, Ajax) {
 
                     Ajax.call([request])[0].done(function(data) {
 
-                        console.log(data);
+                        console.log(data.message);
+
+                        str.get_string('txn_repeat', 'enrol_bkash').then(function(langString) {
+                            notification.addNotification({
+                                message: langString,
+                                type: 'error'
+                            });
+                            console.log(data.message);
+
+                        }).catch(Notification.exception);
+
                     }).fail(Notification.exception);
                 }
             }

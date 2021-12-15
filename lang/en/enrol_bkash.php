@@ -106,6 +106,7 @@ $string['apiurl'] = 'Api Url';
 $string['requestedurl'] = 'Requested Url';
 $string['requestedurl_desc'] = 'Requested Url Without parameter';
 $string['course'] = 'Course';
+$string['txn_repeat'] = 'The transaction is being repeated';
 
 $string['bkash_username'] = 'User Name';
 $string['paywithbkash'] = 'Pay With bKash';
