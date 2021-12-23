@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * sslcommerz enrolment plugin tests.
+ * bkash enrolment plugin tests.
  *
- * @package    enrol_sslcommerz
+ * @package    enrol_bkash
  * @copyright  2021 Brain station 23 ltd.
  * @author     Brain station 23 ltd.
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -26,29 +26,29 @@
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * SSLCOMMERZ enrolment plugin tests.
+ * bkash enrolment plugin tests.
  *
  * @copyright  2021 Brain station 23 ltd.
  * @author     Brain station 23 ltd.
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class enrol_sslcommerz_testcase extends advanced_testcase {
+class enrol_bkash_testcase extends advanced_testcase {
 
     public function test_basics() {
-        $this->assertFalse(enrol_is_enabled('sslcommerz'));
-        $plugin = enrol_get_plugin('sslcommerz');
-        $this->assertInstanceOf('enrol_sslcommerz_plugin', $plugin);
-        $this->assertEquals(ENROL_EXT_REMOVED_SUSPENDNOROLES, get_config('enrol_sslcommerz', 'expiredaction'));
+        $this->assertFalse(enrol_is_enabled('bkash'));
+        $plugin = enrol_get_plugin('bkash');
+        $this->assertInstanceOf('enrol_bkash_plugin', $plugin);
+        $this->assertEquals(ENROL_EXT_REMOVED_SUSPENDNOROLES, get_config('enrol_bkash', 'expiredaction'));
     }
 
     public function test_sync_nothing() {
         $this->resetAfterTest();
 
         $this->enable_plugin();
-        $sslcommerzplugin = enrol_get_plugin('sslcommerz');
+        $bkashplugin = enrol_get_plugin('bkash');
 
         // Just make sure the sync does not throw any errors when nothing to do.
-        $sslcommerzplugin->sync(new null_progress_trace());
+        $bkashplugin->sync(new null_progress_trace());
     }
 
     /**
@@ -58,7 +58,7 @@ class enrol_sslcommerz_testcase extends advanced_testcase {
      */
     protected function enable_plugin() {
         $enabled = enrol_get_plugins(true);
-        $enabled['sslcommerz'] = true;
+        $enabled['bkash'] = true;
         $enabled = array_keys($enabled);
         set_config('enrol_plugins_enabled', implode(',', $enabled));
     }
@@ -67,8 +67,8 @@ class enrol_sslcommerz_testcase extends advanced_testcase {
         global $DB;
         $this->resetAfterTest();
 
-        /** @var enrol_sslcommerz_plugin $sslcommerzplugin */
-        $sslcommerzplugin = enrol_get_plugin('sslcommerz');
+        /** @var enrol_bkash_plugin $bkashplugin */
+        $bkashplugin = enrol_get_plugin('bkash');
         /** @var enrol_manual_plugin $manualplugin */
         $manualplugin = enrol_get_plugin('manual');
         $this->assertNotEmpty($manualplugin);
@@ -97,13 +97,13 @@ class enrol_sslcommerz_testcase extends advanced_testcase {
         $context2 = context_course::instance($course2->id);
 
         $data = array('roleid' => $studentrole->id, 'courseid' => $course1->id);
-        $id = $sslcommerzplugin->add_instance($course1, $data);
+        $id = $bkashplugin->add_instance($course1, $data);
         $instance1 = $DB->get_record('enrol', array('id' => $id));
         $data = array('roleid' => $studentrole->id, 'courseid' => $course2->id);
-        $id = $sslcommerzplugin->add_instance($course2, $data);
+        $id = $bkashplugin->add_instance($course2, $data);
         $instance2 = $DB->get_record('enrol', array('id' => $id));
         $data = array('roleid' => $teacherrole->id, 'courseid' => $course2->id);
-        $id = $sslcommerzplugin->add_instance($course2, $data);
+        $id = $bkashplugin->add_instance($course2, $data);
         $instance3 = $DB->get_record('enrol', array('id' => $id));
 
         $maninstance1 = $DB->get_record('enrol', array('courseid' => $course2->id, 'enrol' => 'manual'), '*', MUST_EXIST);
@@ -114,16 +114,16 @@ class enrol_sslcommerz_testcase extends advanced_testcase {
         $this->assertEquals(1, $DB->count_records('role_assignments'));
         $this->assertEquals(1, $DB->count_records('role_assignments', array('roleid' => $studentrole->id)));
 
-        $sslcommerzplugin->enrol_user($instance1, $user1->id, $studentrole->id);
-        $sslcommerzplugin->enrol_user($instance1, $user2->id, $studentrole->id);
-        $sslcommerzplugin->enrol_user($instance1, $user3->id, $studentrole->id, 0, $now - 60);
+        $bkashplugin->enrol_user($instance1, $user1->id, $studentrole->id);
+        $bkashplugin->enrol_user($instance1, $user2->id, $studentrole->id);
+        $bkashplugin->enrol_user($instance1, $user3->id, $studentrole->id, 0, $now - 60);
 
-        $sslcommerzplugin->enrol_user($instance2, $user1->id, $studentrole->id, 0, 0);
-        $sslcommerzplugin->enrol_user($instance2, $user2->id, $studentrole->id, 0, $now - 60 * 60);
-        $sslcommerzplugin->enrol_user($instance2, $user3->id, $studentrole->id, 0, $now + 60 * 60);
+        $bkashplugin->enrol_user($instance2, $user1->id, $studentrole->id, 0, 0);
+        $bkashplugin->enrol_user($instance2, $user2->id, $studentrole->id, 0, $now - 60 * 60);
+        $bkashplugin->enrol_user($instance2, $user3->id, $studentrole->id, 0, $now + 60 * 60);
 
-        $sslcommerzplugin->enrol_user($instance3, $user1->id, $teacherrole->id, $now - 60 * 60 * 24 * 7, $now - 60);
-        $sslcommerzplugin->enrol_user($instance3, $user4->id, $teacherrole->id);
+        $bkashplugin->enrol_user($instance3, $user1->id, $teacherrole->id, $now - 60 * 60 * 24 * 7, $now - 60);
+        $bkashplugin->enrol_user($instance3, $user4->id, $teacherrole->id);
 
         role_assign($managerrole->id, $user3->id, $context1->id);
 
@@ -135,14 +135,14 @@ class enrol_sslcommerz_testcase extends advanced_testcase {
 
         // Execute tests.
 
-        $sslcommerzplugin->set_config('expiredaction', ENROL_EXT_REMOVED_KEEP);
-        $code = $sslcommerzplugin->sync($trace);
+        $bkashplugin->set_config('expiredaction', ENROL_EXT_REMOVED_KEEP);
+        $code = $bkashplugin->sync($trace);
         $this->assertSame(0, $code);
         $this->assertEquals(9, $DB->count_records('user_enrolments'));
         $this->assertEquals(9, $DB->count_records('role_assignments'));
 
-        $sslcommerzplugin->set_config('expiredaction', ENROL_EXT_REMOVED_SUSPENDNOROLES);
-        $sslcommerzplugin->sync($trace);
+        $bkashplugin->set_config('expiredaction', ENROL_EXT_REMOVED_SUSPENDNOROLES);
+        $bkashplugin->sync($trace);
         $this->assertEquals(9, $DB->count_records('user_enrolments'));
         $this->assertEquals(6, $DB->count_records('role_assignments'));
         $this->assertEquals(4, $DB->count_records('role_assignments',
@@ -158,7 +158,7 @@ class enrol_sslcommerz_testcase extends advanced_testcase {
         $this->assertTrue($DB->record_exists('role_assignments',
             array('contextid' => $context2->id, 'userid' => $user1->id, 'roleid' => $studentrole->id)));
 
-        $sslcommerzplugin->set_config('expiredaction', ENROL_EXT_REMOVED_UNENROL);
+        $bkashplugin->set_config('expiredaction', ENROL_EXT_REMOVED_UNENROL);
         role_assign($studentrole->id, $user3->id, $context1->id);
         role_assign($studentrole->id, $user2->id, $context2->id);
         role_assign($teacherrole->id, $user1->id, $context2->id);
@@ -166,7 +166,7 @@ class enrol_sslcommerz_testcase extends advanced_testcase {
         $this->assertEquals(9, $DB->count_records('role_assignments'));
         $this->assertEquals(6, $DB->count_records('role_assignments', array('roleid' => $studentrole->id)));
         $this->assertEquals(2, $DB->count_records('role_assignments', array('roleid' => $teacherrole->id)));
-        $sslcommerzplugin->sync($trace);
+        $bkashplugin->sync($trace);
         $this->assertEquals(6, $DB->count_records('user_enrolments'));
         $this->assertFalse($DB->record_exists('user_enrolments', array('enrolid' => $instance1->id, 'userid' => $user3->id)));
         $this->assertFalse($DB->record_exists('user_enrolments', array('enrolid' => $instance2->id, 'userid' => $user2->id)));
@@ -186,9 +186,9 @@ class enrol_sslcommerz_testcase extends advanced_testcase {
         // Set page URL to prevent debugging messages.
         $PAGE->set_url('/enrol/editinstance.php');
 
-        $pluginname = 'sslcommerz';
+        $pluginname = 'bkash';
 
-        // Only enable the sslcommerz enrol plugin.
+        // Only enable the bkash enrol plugin.
         $CFG->enrol_plugins_enabled = $pluginname;
 
         $generator = $this->getDataGenerator();
@@ -217,7 +217,7 @@ class enrol_sslcommerz_testcase extends advanced_testcase {
         $this->setAdminUser();
         $actions = $plugin->get_user_enrolment_actions($manager, $ue);
 
-        // sslcommerz enrolment has 2 enrol actions for active users when logged in as admin: edit and unenrol.
+        // BKash enrolment has 2 enrol actions for active users when logged in as admin: edit and unenrol.
         $this->assertCount(2, $actions);
 
         // Enrol actions when viewing as a teacher.
@@ -228,7 +228,7 @@ class enrol_sslcommerz_testcase extends advanced_testcase {
         // Login as the teacher.
         $this->setUser($teacher);
         $actions = $plugin->get_user_enrolment_actions($manager, $ue);
-        // Teachers don't have the enrol/sslcommerz:unenrol capability by default, but have enrol/sslcommerz:manage.
+        // Teachers don't have the enrol/bkash:unenrol capability by default, but have enrol/bkash:manage.
         $this->assertCount(1, $actions);
     }
 
@@ -239,7 +239,7 @@ class enrol_sslcommerz_testcase extends advanced_testcase {
      */
     protected function disable_plugin() {
         $enabled = enrol_get_plugins(true);
-        unset($enabled['sslcommerz']);
+        unset($enabled['bkash']);
         $enabled = array_keys($enabled);
         set_config('enrol_plugins_enabled', implode(',', $enabled));
     }

@@ -9,9 +9,7 @@
     $plugin = enrol_get_plugin('bkash');
     $plugin->enrol_user($plugininstance, $USER->id, $plugininstance->roleid );
 
-
     }
-
 
     ?>
 
@@ -20,7 +18,10 @@
 <p><?php print_string("paymentrequired") ?></p>
 <p><b><?php echo $instancename; ?></b></p>
 <p><b><?php echo get_string("cost").": {$instance->currency} {$localisedcost}"; ?></b></p>
-<p><img alt="<?php print_string('bkashaccepted', 'enrol_bkash') ?>" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjqVfXeM4v-2gJsfCe6x9Lxgy5A5QHTjSu4NWusv0Ih9sKlPMIBFBKnPx37e_fuTo7SqQ&usqp=CAU   " /></p>
+<p> <img alt="<?php print_string('bkashaccepted', 'enrol_bkash') ?>"
+        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjqVfXeM4v-2gJsfCe6x9Lxgy5A5QHTjSu4NWusv0Ih9sKlPMIBFBKnPx37e_fuTo7SqQ&usqp=CAU"
+    />
+</p>
 <p><?php print_string("paymentinstant") ?></p>
 
     <button id="bKash_button" class="btn btn-danger">Pay With bKash</button>

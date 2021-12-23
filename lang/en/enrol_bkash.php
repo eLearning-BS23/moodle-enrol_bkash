@@ -25,11 +25,6 @@
 
 $string['assignrole'] = 'Assign role';
 $string['businessemail'] = 'bkash business email';
-//$string['businessstoreid'] = 'Store Id';
-//$string['businessstorepassword'] = 'Store Password';
-//$string['businessemail_desc'] = 'The email address of your business bkash account';
-//$string['businessstoreid_desc'] = 'The Store Id Provided from bkash';
-//$string['businessstorepassword_desc'] = 'The Store Password Provided from bkash';
 $string['cost'] = 'Enrol cost';
 $string['costerror'] = 'The enrolment cost is not numeric';
 $string['costorkey'] = 'Please choose one of the following methods of enrolment.';
