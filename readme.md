@@ -36,7 +36,7 @@ To get the source code from GitHub, type
 $ git clone https://github.com/eLearning-BS23/moodle-enrol_bkash.git
 ```
 
-##Configuration 
+## Configuration 
 
 You can install this plugin from  [Moodle plugins directory](https://moodle.org/plugins) or can download from [Github](https://github.com/eLearning-BS23/moodle-enrol_bkash.git).
 
@@ -49,8 +49,13 @@ Enrolment settings:
 
 Choose bkash from Add method option
 
+![Screenshot from 2021-12-23 14-09-40](https://user-images.githubusercontent.com/40598386/147213954-ecc8a1c7-1c84-4030-a365-449d19bfac64.png)
+
+
 - Add price and other required informations.
 > Dashboard->Courses->Course->Users->Enrolment methods->bKash settings
+
+![Screenshot from 2021-12-23 14-47-15](https://user-images.githubusercontent.com/40598386/147214656-f77f2462-8422-4d6b-a16d-9dd07a8b0ee3.png)
 
 Save changes.
 That's it. and you are done!
