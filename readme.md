@@ -39,8 +39,21 @@ $ git clone https://github.com/eLearning-BS23/moodle-enrol_bkash.git
 ## Configuration 
 
 You can install this plugin from  [Moodle plugins directory](https://moodle.org/plugins) or can download from [Github](https://github.com/eLearning-BS23/moodle-enrol_bkash.git).
+## Plugin Global Settings
+### Go to
+  Dashboard->Site administration->Plugins->Enrolments-> bKash settings
+- Insert the bKash Merchant username
+- Insert the bKash Merchant password
+- Insert the bKash Merchant App Key
+- Insert the bKash Merchant App Secret Key
+- Done!
 
-Enrolment settings:
+![Screenshot from 2021-12-23 14-44-46](https://user-images.githubusercontent.com/40598386/147215664-9be1fb5e-9268-4ff7-a4ab-63b1f68fbe6d.png)
+
+![Screenshot from 2021-12-23 14-45-52](https://user-images.githubusercontent.com/40598386/147215727-50594a5d-8d15-4228-9603-d7edbc9a4872.png)
+
+
+### Enrolment settings:
 - Login as a course adminstrator.
 - Enable enrol bkash plugin.
 - Go to your course settings from
