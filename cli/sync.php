@@ -69,6 +69,7 @@ if (empty($options['verbose'])) {
 }
 
 /** @var $plugin enrol_bkash_plugin */
+
 $plugin = enrol_get_plugin('bkash');
 
 $result = $plugin->sync($trace);
