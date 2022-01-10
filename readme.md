@@ -1,6 +1,8 @@
 # Moodle Enrol Bkash plugin
 
-bKash is the fastest and safest medium of financial transaction, bKash makes your life simple with Send Money, Add Money, Pay Bill, Mobile Recharge, Payment and many more services.  
+bKash Limited (bKash) is a Bank-led Mobile Financial Service Provider in Bangladesh operating under the license and approval of the Central Bank (Bangladesh Bank) as a subsidiary of BRAC Bank Limited. bKash provides safe, convenient and easy ways to make payments and money transfer services via mobile phones to both the unbanked and the banked people of Bangladesh.
+
+bKash is the fastest and safest medium of financial transaction. bKash users can deposit money into their mobile accounts and then access a range of services. It makes your life simple with Send Money, Add Money, Pay Bill, Mobile Recharge, Payment and many more services.  
 
 ## Features 
 
