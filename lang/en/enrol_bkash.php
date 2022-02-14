@@ -54,7 +54,6 @@ $string['bkash:manage'] = 'Manage enrolled users';
 $string['bkash:unenrol'] = 'Unenrol users from course';
 $string['bkash:unenrolself'] = 'Unenrol self from the course';
 $string['bkashaccepted'] = 'bkash payments accepted';
-$string['pluginname'] = 'bkash';
 $string['pluginname_desc'] = 'The bkash module allows you to set up paid courses.  If the cost for any course is zero, then students are not asked to pay for entry.  There is a site-wide cost that you set here as a default for the whole site and then a course setting that you can set for each course individually. The course cost overrides the site cost.';
 $string['privacy:metadata:enrol_bkash:enrol_bkash'] = 'Information about the bkash transactions for bkash enrolments.';
 $string['privacy:metadata:enrol_bkash:enrol_bkash:business'] = 'Email address or bkash account ID of the payment recipient (that is, the merchant).';
@@ -112,4 +111,8 @@ $string['bkash_app_key'] = 'BKash App Key';
 $string['bkash_app_key_desc'] = 'BKash Merchant App Key';
 $string['bkash_app_secret_key'] = 'BKash App Secret Key';
 $string['bkash_app_secret_key_desc'] = 'BKash Merchant App Secret Key';
+$string['environment_help'] = 'BKash Merchant Environment';
+$string['environment'] = 'BKash Merchant Environment';
+$string['sandbox'] = 'Sandbox';
+$string['live'] = 'Live';
 

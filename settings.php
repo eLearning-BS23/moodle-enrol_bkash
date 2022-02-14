@@ -47,6 +47,16 @@ if ($ADMIN->fulltree) {
         get_string('bkash_app_secret_key', 'enrol_bkash'),
         get_string('bkash_app_secret_key_desc', 'enrol_bkash'), '', PARAM_TEXT));
 
+    $options = array(
+        'sandbox' => get_string('sandbox', 'enrol_bkash'),
+        "live" => get_string('live', 'enrol_bkash'),
+
+    );
+    $settings->add(new admin_setting_configselect('enrol_bkash/environment',
+        get_string('environment', 'enrol_bkash'),
+        get_string('environment_help', 'enrol_bkash'),'sandbox', $options));
+
+
     $settings->add(new admin_setting_configcheckbox('enrol_bkash/mailstudents',
         get_string('mailstudents', 'enrol_bkash'), '', 0));
 

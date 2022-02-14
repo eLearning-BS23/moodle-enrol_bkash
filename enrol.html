@@ -13,17 +13,25 @@
 
     ?>
 
-    <script src="https://scripts.sandbox.bka.sh/versions/1.2.0-beta/checkout/bKash-checkout-sandbox.js"></script>
+    <script id="myScript" src="https://scripts.sandbox.bka.sh/versions/1.2.0-beta/checkout/bKash-checkout-sandbox.js"></script>
 
-<p><?php print_string("paymentrequired") ?></p>
-<p><b><?php echo $instancename; ?></b></p>
-<p><b><?php echo get_string("cost").": {$instance->currency} {$localisedcost}"; ?></b></p>
-<p> <img alt="<?php print_string('bkashaccepted', 'enrol_bkash') ?>"
-        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjqVfXeM4v-2gJsfCe6x9Lxgy5A5QHTjSu4NWusv0Ih9sKlPMIBFBKnPx37e_fuTo7SqQ&usqp=CAU"
-    />
-</p>
-<p><?php print_string("paymentinstant") ?></p>
+    <p>
+        <?php print_string("paymentrequired") ?>
+    </p>
+    <p><strong>
+            <?php echo $instancename; ?>
+        </strong></p>
+    <p><strong>
+            <?php echo get_string("cost").": {$instance->currency} {$localisedcost}"; ?>
+        </strong></p>
+    <p> <img alt="<?php print_string('bkashaccepted', 'enrol_bkash') ?>"
+            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjqVfXeM4v-2gJsfCe6x9Lxgy5A5QHTjSu4NWusv0Ih9sKlPMIBFBKnPx37e_fuTo7SqQ&usqp=CAU" />
+    </p>
+    <p>
+        <?php print_string("paymentinstant") ?>
+    </p>
+    <input type="hidden" id="custom" name="custom" value="<?php echo "{$USER->id}-{$course->id}-{$instance->id}" ?>" />
 
-    <button id="bKash_button" class="btn btn-danger">Pay With bKash</button>
-
+    <!-- <button id="bKash_button" class="btn btn-danger">Pay With bKash</button> -->
+    <button id="bKash_button">Pay With bKash</button>
 </div>
