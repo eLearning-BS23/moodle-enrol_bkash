@@ -1,14 +1,5 @@
 <?php
     global $DB, $USER;
-
-    if ($DB->record_exists("enrol_bkash", array("userid" => $instance_info["userid"], "courseid" => $instance_info["courseid"]))){
-
-    $plugininstance=$DB->get_record("enrol", array("id" => $instance_info["instanceid"], "enrol" => "bkash", "status" => 0));
-    $plugin = enrol_get_plugin('bkash');
-    $plugin->enrol_user($plugininstance, $USER->id, $plugininstance->roleid );
-
-    }
-
     ?>
 <div align="center">
     <p>

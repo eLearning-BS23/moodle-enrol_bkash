@@ -1,26 +1,39 @@
 <?php
 
-class BkashHelper
-{
+class BkashHelper {
     // bKash Merchant API Information
 
-    public $base_url = 'https://checkout.sandbox.bka.sh/v1.2.0-beta'; // For Live Production URL: https://checkout.pay.bka.sh/v1.2.0-beta
-    public $app_key = '5tunt4masn6pv2hnvte1sb5n3j'; // bKash Merchant API APP KEY
-    public $app_secret = '1vggbqd4hqk9g96o9rrrp2jftvek578v7d2bnerim12a87dbrrka'; // bKash Merchant API APP SECRET
-    public $username = 'sandboxTestUser'; // bKash Merchant API USERNAME
-    public $password = 'hWD@8vtzw0'; // bKash Merchant API PASSWORD
+    private $appkey;
+    private $appsecret;
+    private $username;
+    private $password;
+    private $paymentmode;
+    private $baseurl;
 
 
-    public function getToken()
-    {
+    public function __construct(string $appkey, string $appsecret, string $username, string $password, string $paymentmode) {
+        $this->appkey = $appkey;
+        $this->appsecret = $appsecret;
+        $this->username = $username;
+        $this->password = $password;
+        $this->paymentmode = $paymentmode;
+
+        if ($this->paymentmode == 'live') {
+            $this->baseurl = 'https://checkout.pay.bka.sh/v1.2.0-beta';
+        } else {
+            $this->baseurl = 'https://checkout.sandbox.bka.sh/v1.2.0-beta';
+        }
+    }
+
+    public function getToken() {
         require('../../../config.php');
         global $SESSION;
         $post_token = array(
-            'app_key' => $this->app_key,
-            'app_secret' => $this->app_secret
+            'app_key' => $this->appkey,
+            'app_secret' => $this->appsecret
         );
 
-        $url = curl_init("$this->base_url/checkout/token/grant");
+        $url = curl_init("$this->baseurl/checkout/token/grant");
         $post_token = json_encode($post_token);
         $header = array(
             'Content-Type:application/json',
@@ -41,15 +54,14 @@ class BkashHelper
         if (array_key_exists('msg', $response)) {
             return json_encode($response);
         }
-        $SESSION-> idtoken = $response['id_token'];
+        $SESSION->idtoken = $response['id_token'];
         return json_encode($response);
     }
 
-    public function createPayment()
-    {
+    public function createPayment() {
         global $SESSION;
 
-        if ((string)$_POST['amount'] == $SESSION->finalamount)  {
+        if ((string)$_POST['amount'] != (string)$SESSION->finalamount) {
             return json_encode([
                 'errorMessage' => 'Amount Mismatch',
                 'errorCode' => 2006
@@ -60,14 +72,14 @@ class BkashHelper
 
         $_POST['intent'] = 'sale';
         $_POST['currency'] = 'BDT';
-        $_POST['merchantInvoiceNumber'] = rand();
+        $_POST['merchantInvoiceNumber'] = uniqid();
 
-        $url = curl_init("$this->base_url/checkout/payment/create");
+        $url = curl_init("$this->baseurl/checkout/payment/create");
         $request_data_json = json_encode($_POST);
         $header = array(
             'Content-Type:application/json',
             "authorization: $token",
-            "x-app-key: $this->app_key"
+            "x-app-key: $this->appkey"
         );
 
         curl_setopt($url, CURLOPT_HTTPHEADER, $header);
@@ -82,18 +94,17 @@ class BkashHelper
         return $result_data;
     }
 
-    public function executePayment()
-    {
+    public function executePayment() {
         global $SESSION;
 
         $paymentID = $_POST['paymentID'];
         $token = $_POST['token'];
 
-        $url = curl_init("$this->base_url/checkout/payment/execute/" . $paymentID);
+        $url = curl_init("$this->baseurl/checkout/payment/execute/" . $paymentID);
         $header = array(
             'Content-Type:application/json',
             "authorization:$token",
-            "x-app-key:$this->app_key"
+            "x-app-key:$this->appkey"
         );
 
         curl_setopt($url, CURLOPT_HTTPHEADER, $header);
@@ -106,16 +117,17 @@ class BkashHelper
         return $result_data;
     }
 
-    public function queryPayment()
-    {
-        $token = $_GET['token'];
+    public function queryPayment() {
+        require('../../../config.php');
+        global $SESSION;
+
         $paymentID = $_GET['paymentID'];
 
-        $url = curl_init("$this->base_url/checkout/payment/query/" . $paymentID);
+        $url = curl_init("$this->baseurl/checkout/payment/query/" . $paymentID);
         $header = array(
             'Content-Type:application/json',
-            "authorization:$token",
-            "x-app-key:$this->app_key"
+            "authorization:$SESSION->idtoken",
+            "x-app-key:$this->appkey"
         );
 
         curl_setopt($url, CURLOPT_HTTPHEADER, $header);
@@ -128,14 +140,15 @@ class BkashHelper
         return $result_data;
     }
 
-    public function searchTransaction($trxID)
-    {
-        $url = curl_init("$this->base_url/checkout/payment/search/" . $trxID);
+    public function searchTransaction($trxID) {
+        require('../../../config.php');
+        global $SESSION;
+        $url = curl_init("$this->baseurl/checkout/payment/search/" . $trxID);
 
         $header = array(
             'Content-Type:application/json',
-            'authorization:' . $_SESSION['id_token'],
-            "x-app-key: $this->app_key"
+            'authorization:' . $SESSION->idtoken,
+            "x-app-key: $this->appkey"
         );
 
         curl_setopt($url, CURLOPT_HTTPHEADER, $header);
@@ -150,7 +163,9 @@ class BkashHelper
 
     public static function paymentSuccess() {
         require('../../../config.php');
+
         global $DB;
+
         $data = new stdClass();
         $data->userid = $_POST['arr']['userid'];
         $data->courseid = $_POST['arr']['courseid'];

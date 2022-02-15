@@ -92,7 +92,6 @@ $string['unenrolselfconfirm'] = 'Do you really want to unenrol yourself from cou
 $string['paymendue'] = 'Amount paid is not enough "{$a}"?';
 $string['coursemissing'] = 'Course "{$a}" doesn\'t exist';
 $string['usermissing'] = 'User {$a} doesn\'t exist';
-$string['pluginname'] = 'bkash';
 $string['paymenterror'] = 'Error updating record: Something went wrong';
 $string['paymentfail'] = 'Payment was not valid. Please contact with the merchant.';
 $string['paymentinvalid'] = 'Invalid Information.';
@@ -112,4 +111,8 @@ $string['bkash_app_key'] = 'BKash App Key';
 $string['bkash_app_key_desc'] = 'BKash Merchant App Key';
 $string['bkash_app_secret_key'] = 'BKash App Secret Key';
 $string['bkash_app_secret_key_desc'] = 'BKash Merchant App Secret Key';
+$string['paymentmode'] = 'BKash Merchant Payment Mode';
+$string['live'] = 'Live';
+$string['sandbox'] = 'Sandbox';
+$string['paymentmode_help'] = 'BKash Merchant Payment Mode Live or sandbox';
 

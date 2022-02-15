@@ -5,7 +5,7 @@ global $SESSION;
 
 ?>
 <div class="wrapper" style="text-align: center">
-    <img onclick="payment()" style="height: 70px; cursor: pointer" src="https://scripts.sandbox.bka.sh/resources/img/bkash_payment.png">
+    <img onclick="payment()" alt="bkash" style="height: 70px; cursor: pointer" src="https://scripts.sandbox.bka.sh/resources/img/bkash_payment.png">
     <button id="bKash_button" style="display: none"></button>
 </div>
 
@@ -75,7 +75,7 @@ global $SESSION;
 
         onClose: function() {
             alert('User has clicked the close button');
-            location.reload();
+            location.href = '../../course/view.php?id=' + courseid
             // for error handle after close new bKash popup
         }
     });
@@ -143,8 +143,7 @@ global $SESSION;
 
     function queryPayment() {
         $.get('classes/api-handle.php?action=queryPayment', {
-            paymentID: paymentID,
-            token: token
+            paymentID: paymentID
         }, function(data) {
             data = JSON.parse(data);
             if (data.transactionStatus === 'Completed') {
