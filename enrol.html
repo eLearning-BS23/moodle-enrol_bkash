@@ -1,29 +1,32 @@
-<div align="center">
-
-    <?php
+<?php
     global $DB, $USER;
-
-    if ($DB->record_exists("enrol_bkash", array("userid" => $instance_info["userid"], "courseid" => $instance_info["courseid"]))){
-
-    $plugininstance=$DB->get_record("enrol", array("id" => $instance_info["instanceid"], "enrol" => "bkash", "status" => 0));
-    $plugin = enrol_get_plugin('bkash');
-    $plugin->enrol_user($plugininstance, $USER->id, $plugininstance->roleid );
-
-    }
-
     ?>
+<div align="center">
+    <p>
+        <?php print_string("paymentrequired") ?>
+    </p>
+    <p><strong>
+            <?php echo $instancename; ?>
+        </strong></p>
+    <p><strong>
+            <?php echo get_string("cost").": {$instance->currency} {$localisedcost}"; ?>
+        </strong></p>
+    <p> <img alt="<?php print_string('bkashaccepted', 'enrol_bkash') ?>"
+            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjqVfXeM4v-2gJsfCe6x9Lxgy5A5QHTjSu4NWusv0Ih9sKlPMIBFBKnPx37e_fuTo7SqQ&usqp=CAU" />
+    </p>
+    <p>
+        <?php print_string("paymentinstant") ?>
+    </p>
 
-    <script src="https://scripts.sandbox.bka.sh/versions/1.2.0-beta/checkout/bKash-checkout-sandbox.js"></script>
+    <form method="post" action="<?php echo $CFG->wwwroot; ?>/enrol/bkash/payment.php">
+        <input type="hidden" id="custom" name="custom" value="<?php echo $USER->id.'-'.$course->id.'-'.$instance->id; ?>" />
+        <input type="hidden" id="courseid" name="courseid" value="<?php echo $course->id; ?>" />
+        <input type="hidden" id="userid" name="userid" value="<?php echo $USER->id; ?>" />
+        <input type="hidden" id="instanceid" name="instanceid" value="<?php echo $instance->id; ?>" />
+        <input type="hidden" value="<?=p($cost) ?>" name="amount" id="amount" required />
+        <input type="hidden" name="currency_code" value="<?php p($instance->currency) ?>" />
+        <button class="btn btn-danger">Pay With bKash</button>
+    </form>
 
-<p><?php print_string("paymentrequired") ?></p>
-<p><b><?php echo $instancename; ?></b></p>
-<p><b><?php echo get_string("cost").": {$instance->currency} {$localisedcost}"; ?></b></p>
-<p> <img alt="<?php print_string('bkashaccepted', 'enrol_bkash') ?>"
-        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjqVfXeM4v-2gJsfCe6x9Lxgy5A5QHTjSu4NWusv0Ih9sKlPMIBFBKnPx37e_fuTo7SqQ&usqp=CAU"
-    />
-</p>
-<p><?php print_string("paymentinstant") ?></p>
-
-    <button id="bKash_button" class="btn btn-danger">Pay With bKash</button>
 
 </div>

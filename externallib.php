@@ -51,7 +51,6 @@ class enrol_bkash_external extends external_api {
         return new external_function_parameters (
             array(
                 'courseid' => new external_value(PARAM_INT, 'Course Id', VALUE_REQUIRED),
-                'userid'  => new external_value(PARAM_INT, 'User id', VALUE_REQUIRED),
                 'payment_status' => new external_value(PARAM_TEXT, 'Payment Status', VALUE_REQUIRED),
                 'txn_id' => new external_value(PARAM_TEXT, 'Transaction ID', VALUE_REQUIRED),
                 'item_name' => new external_value(PARAM_TEXT, 'Item Name', VALUE_REQUIRED),
@@ -70,14 +69,13 @@ class enrol_bkash_external extends external_api {
      * @return array
      * @throws invalid_parameter_exception
      */
-    public static function bkash_enrolment_detail($courseid, $userid, $payment_status, $txn_id, $item_name, $instanceid) {
-        global $DB;
+    public static function bkash_enrolment_detail($courseid, $payment_status, $txn_id, $item_name, $instanceid) {
+        global $DB, $USER;
 
         self::validate_parameters(
             self::bkash_enrolment_detail_parameters(),
             array(
                 'courseid' => $courseid,
-                'userid' => $userid,
                 'payment_status' => $payment_status,
                 'txn_id' => $txn_id,
                 'item_name' => $item_name,
@@ -86,7 +84,7 @@ class enrol_bkash_external extends external_api {
         );
 
         $data = new stdClass();
-        $data->userid = $userid;
+        $data->userid = $USER->id;
         $data->courseid = $courseid;
         $data->payment_status = $payment_status;
         $data->txn_id = $txn_id;
