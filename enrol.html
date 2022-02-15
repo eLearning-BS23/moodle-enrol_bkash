@@ -28,8 +28,10 @@
     </p>
 
     <form method="post" action="<?php echo $CFG->wwwroot; ?>/enrol/bkash/payment.php">
-        <input type="hidden" id="custom" name="custom" value="<?php echo " {$USER->id}-{$course->id}-{$instance->id}"
-        ?>" />
+        <input type="hidden" id="custom" name="custom" value="<?php echo $USER->id.'-'.$course->id.'-'.$instance->id; ?>" />
+        <input type="hidden" id="courseid" name="courseid" value="<?php echo $course->id; ?>" />
+        <input type="hidden" id="userid" name="userid" value="<?php echo $USER->id; ?>" />
+        <input type="hidden" id="instanceid" name="instanceid" value="<?php echo $instance->id; ?>" />
         <input type="hidden" value="<?=p($cost) ?>" name="amount" id="amount" required />
         <input type="hidden" name="currency_code" value="<?php p($instance->currency) ?>" />
         <button class="btn btn-danger">Pay With bKash</button>

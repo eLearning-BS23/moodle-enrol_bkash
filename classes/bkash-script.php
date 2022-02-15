@@ -1,32 +1,40 @@
 <?php
 
 require('../../config.php');
-
+global $SESSION;
 
 ?>
 <div class="wrapper" style="text-align: center">
-    <img onclick="payment()" style="height: 70px; cursor: pointer"
-         src="https://scripts.sandbox.bka.sh/resources/img/bkash_payment.png">
+    <img onclick="payment()" style="height: 70px; cursor: pointer" src="https://scripts.sandbox.bka.sh/resources/img/bkash_payment.png">
     <button id="bKash_button" style="display: none"></button>
 </div>
 
 <script>
+    var token = '';
+    var courseid="";
+    var userid="";
+    var instanceid="";
     $(() => {
         showLoading();
         payment();
+        courseid = <?php echo strval($_POST['courseid']); ?>;
+        instanceid = <?php echo strval($_POST['instanceid']); ?>;
+        userid = <?php echo strval($_POST['userid']); ?>;
     })
+
 
     function payment() {
         showLoading();
 
         // get token
         $.ajax({
-            url: 'api-handle.php?action=getToken',
+            url: 'classes/api-handle.php?action=getToken',
             type: 'POST',
             contentType: 'application/json',
-            success: function (data) {
-                data = JSON.parse(data);
+            success: function(data) {
 
+                data = JSON.parse(data);
+                token = data.id_token;
                 if (data.hasOwnProperty('msg')) {
                     data = {
                         errorMessage: data.msg,
@@ -41,7 +49,7 @@ require('../../config.php');
                     hideLoading()
                 }
             },
-            error: function (err) {
+            error: function(err) {
                 showErrorMessage(err);
             }
         });
@@ -52,19 +60,22 @@ require('../../config.php');
     bKash.init({
         paymentMode: 'checkout', // fixed value ‘checkout’
         paymentRequest: {
-            amount: '100', //max two decimal points allowed
-            intent: 'sale'
+            amount: '<?php echo $SESSION->finalamount ?>', //max two decimal points allowed
+            intent: 'sale',
+            token: token,
         },
 
-        createRequest: function (request) {
+        createRequest: function(request) {
             createPayment(request);
         },
 
-        executeRequestOnAuthorization: function () {
+        executeRequestOnAuthorization: function() {
             executePayment()
         },
 
-        onClose: function () {
+        onClose: function() {
+            alert('User has clicked the close button');
+            location.reload();
             // for error handle after close new bKash popup
         }
     });
@@ -72,14 +83,14 @@ require('../../config.php');
     function createPayment(request) {
         // Amount already checked and verified by the controller
         // because of createRequest function finds amount from this request
-        request['amount'] = <?php echo $_SESSION['final_amount'] ?>; // max two decimal points allowed
-
+        request['amount'] = <?php echo $SESSION->finalamount ?>; // max two decimal points allowed
+        request['token'] = token;
         $.ajax({
-            url: 'api-handle.php?action=createPayment',
+            url: 'classes/api-handle.php?action=createPayment',
             type: 'POST',
             dataType: "text",
             data: request,
-            success: function (data) {
+            success: function(data) {
                 data = JSON.parse(data);
 
                 if (data && data.paymentID != null) {
@@ -92,7 +103,7 @@ require('../../config.php');
                     bKash.create().onError();
                 }
             },
-            error: function (err) {
+            error: function(err) {
                 showErrorMessage(err.responseJSON);
                 bKash.create().onError();
             }
@@ -101,19 +112,20 @@ require('../../config.php');
 
     function executePayment() {
         $.ajax({
-            url: 'api-handle.php?action=executePayment',
+            url: 'classes/api-handle.php?action=executePayment',
             type: 'POST',
             dataType: "text",
             data: {
-                "paymentID": paymentID
+                "paymentID": paymentID,
+                'token': token
             },
-            success: function (data) {
+            success: function(data) {
                 data = JSON.parse(data);
 
                 if (data) {
                     if (data.paymentID != null) { // success payment
-                        data = JSON.stringify(data);
-                        location.href = 'success-payment.php?response=' + data
+                        // data = JSON.stringify(data);
+                        queryPayment();
                     } else {
                         showErrorMessage(data);
                         bKash.execute().onError();
@@ -122,7 +134,7 @@ require('../../config.php');
                     queryPayment()
                 }
             },
-            error: function () {
+            error: function() {
                 hideLoading()
                 bKash.execute().onError();
             }
@@ -130,14 +142,23 @@ require('../../config.php');
     }
 
     function queryPayment() {
-        $.get('api-handle.php?action=queryPayment', {
-            paymentID: paymentID
-        }, function (data) {
+        $.get('classes/api-handle.php?action=queryPayment', {
+            paymentID: paymentID,
+            token: token
+        }, function(data) {
             data = JSON.parse(data);
-
             if (data.transactionStatus === 'Completed') {
+                params=  {
+                    'userid': userid,
+                    'courseid': courseid,
+                    "payment_status": data.transactionStatus,
+                    'txn_id': data.trxID,
+                    "item_name": data.merchantInvoiceNumber,
+                    "instanceid": instanceid
+                }
+                storeEnrollData(params);
                 data = JSON.stringify(data);
-                location.href = 'success-payment.php?response=' + data
+                // location.href = 'success-payment.php?response=' + data
             } else {
                 hideLoading()
                 let request = {};
@@ -173,8 +194,32 @@ require('../../config.php');
         $('#full_page_loading').removeClass('hidden');
     }
 
+
+
     function hideLoading() {
         $('#full_page_loading').addClass('hidden');
+    }
+
+
+    function storeEnrollData(params) {
+        $.ajax({
+            url: "classes/api-handle.php?action=paymentSuccess",
+            type: 'POST',
+            dataType: "text",
+            data: {
+                "paymentID": paymentID,
+                'arr': params
+            },
+            success: function(data) {
+                if(data == 'success'){
+                    location.href = '../../course/view.php?id=' + courseid
+                }
+            },
+            error: function() {
+                hideLoading()
+                bKash.execute().onError();
+            }
+        });
     }
 
 </script>

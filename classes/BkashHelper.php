@@ -13,8 +13,8 @@ class BkashHelper
 
     public function getToken()
     {
-        $_SESSION['id_token'] = null;
-
+        require('../../../config.php');
+        global $SESSION;
         $post_token = array(
             'app_key' => $this->app_key,
             'app_secret' => $this->app_secret
@@ -41,22 +41,22 @@ class BkashHelper
         if (array_key_exists('msg', $response)) {
             return json_encode($response);
         }
-
-        $_SESSION['id_token'] = $response['id_token'];
-
+        $SESSION-> idtoken = $response['id_token'];
         return json_encode($response);
     }
 
     public function createPayment()
     {
-        if ((string)$_POST['amount']) {
+        global $SESSION;
+
+        if ((string)$_POST['amount'] == $SESSION->finalamount)  {
             return json_encode([
                 'errorMessage' => 'Amount Mismatch',
                 'errorCode' => 2006
             ]);
         }
 
-        $token = $_SESSION['id_token'];
+        $token = $_POST["token"];
 
         $_POST['intent'] = 'sale';
         $_POST['currency'] = 'BDT';
@@ -84,9 +84,10 @@ class BkashHelper
 
     public function executePayment()
     {
-        $token = $_SESSION['id_token'];
+        global $SESSION;
 
         $paymentID = $_POST['paymentID'];
+        $token = $_POST['token'];
 
         $url = curl_init("$this->base_url/checkout/payment/execute/" . $paymentID);
         $header = array(
@@ -107,7 +108,7 @@ class BkashHelper
 
     public function queryPayment()
     {
-        $token = $_SESSION['id_token'];
+        $token = $_GET['token'];
         $paymentID = $_GET['paymentID'];
 
         $url = curl_init("$this->base_url/checkout/payment/query/" . $paymentID);
@@ -145,5 +146,22 @@ class BkashHelper
         curl_close($url);
 
         return $result_data;
+    }
+
+    public static function paymentSuccess() {
+        require('../../../config.php');
+        global $DB;
+        $data = new stdClass();
+        $data->userid = $_POST['arr']['userid'];
+        $data->courseid = $_POST['arr']['courseid'];
+        $data->payment_status = $_POST['arr']['payment_status'];
+        $data->txn_id = $_POST['arr']['txn_id'];
+        $data->item_name = $_POST['arr']['item_name'];
+        $data->instanceid = $_POST['arr']['instanceid'];
+
+
+        $DB->insert_record("enrol_bkash", $data);
+        $output = 'success';
+        return $output;
     }
 }

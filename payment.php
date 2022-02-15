@@ -52,7 +52,8 @@ $custom = required_param('custom', PARAM_TEXT);
 // IF CONDITION SUCCESS THEN YOU CAN SHOW bKash Payment Button Here
 // GET Amount from your request
 $amount = $amount;
-
+global $SESSION;
+$SESSION->finalamount = $amount;
 include './classes/bkash-script.php';
 ?>
 
