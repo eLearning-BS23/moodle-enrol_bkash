@@ -210,7 +210,6 @@ class enrol_bkash_privacy_provider_testcase extends \core_privacy\tests\provider
         $this->assertTrue($writer->has_any_data());
 
         $data = $writer->get_data([get_string('transactions', 'enrol_bkash')]);
-
     }
 
     /**
@@ -254,7 +253,8 @@ class enrol_bkash_privacy_provider_testcase extends \core_privacy\tests\provider
         $this->assertCount(2, $data->transactions);
         $this->assertEqualsCanonicalizing(
             ['STUDENT2-IN-COURSE2-00', 'STUDENT2-IN-COURSE2-01'],
-            array_column($data->transactions, 'txn_id'));
+            array_column($data->transactions, 'txn_id')
+        );
     }
 
     /**
@@ -353,8 +353,11 @@ class enrol_bkash_privacy_provider_testcase extends \core_privacy\tests\provider
         );
 
         // Delete data for user.
-        $contextlist = new \core_privacy\local\request\approved_contextlist($this->student12, 'enrol_bkash',
-            [$coursecontext1->id]);
+        $contextlist = new \core_privacy\local\request\approved_contextlist(
+            $this->student12,
+            'enrol_bkash',
+            [$coursecontext1->id]
+        );
         provider::delete_data_for_user($contextlist);
 
         // After deletion, bkash transactions for student12 in course1 should have been deleted.
@@ -407,8 +410,11 @@ class enrol_bkash_privacy_provider_testcase extends \core_privacy\tests\provider
         );
 
         // Delete data for user.
-        $contextlist = new \core_privacy\local\request\approved_contextlist($this->student12, 'enrol_bkash',
-            [$coursecontext1->id, $coursecontext2->id]);
+        $contextlist = new \core_privacy\local\request\approved_contextlist(
+            $this->student12,
+            'enrol_bkash',
+            [$coursecontext1->id, $coursecontext2->id]
+        );
         provider::delete_data_for_user($contextlist);
 
         // After deletion, bkash enrolment data for student12 in both course1 and course2 should have been deleted.
@@ -452,8 +458,11 @@ class enrol_bkash_privacy_provider_testcase extends \core_privacy\tests\provider
         );
 
         // Delete data for user in $coursecontext1.
-        $contextlist = new \core_privacy\local\request\approved_contextlist($this->businessuser1, 'enrol_bkash',
-            [$coursecontext1->id]);
+        $contextlist = new \core_privacy\local\request\approved_contextlist(
+            $this->businessuser1,
+            'enrol_bkash',
+            [$coursecontext1->id]
+        );
         provider::delete_data_for_user($contextlist);
 
         // After deletion, bkash enrolment data for businessuser1 in course1 should have been deleted.
@@ -497,8 +506,11 @@ class enrol_bkash_privacy_provider_testcase extends \core_privacy\tests\provider
         );
 
         // Delete data for user.
-        $contextlist = new \core_privacy\local\request\approved_contextlist($this->receiveruser1, 'enrol_bkash',
-            [$coursecontext1->id]);
+        $contextlist = new \core_privacy\local\request\approved_contextlist(
+            $this->receiveruser1,
+            'enrol_bkash',
+            [$coursecontext1->id]
+        );
         provider::delete_data_for_user($contextlist);
 
         // After deletion, bkash enrolment data for receiveruser1 in course1 should have been deleted.
@@ -584,8 +596,12 @@ class enrol_bkash_privacy_provider_testcase extends \core_privacy\tests\provider
         );
         $this->assertEqualsCanonicalizing(
             [$this->course1->id, $this->course2->id, $this->course2->id],
-            $DB->get_fieldset_select('enrol_bkash', 'courseid', 'business = ?',
-                [\core_text::strtolower($this->businessuser1->email)])
+            $DB->get_fieldset_select(
+                'enrol_bkash',
+                'courseid',
+                'business = ?',
+                [\core_text::strtolower($this->businessuser1->email)]
+            )
         );
         $this->assertEquals(
             3,
@@ -593,8 +609,11 @@ class enrol_bkash_privacy_provider_testcase extends \core_privacy\tests\provider
         );
 
         // Delete data of student12 and businessuser1 in course1.
-        $approveduserlist = new \core_privacy\local\request\approved_userlist($coursecontext1, 'enrol_bkash',
-            [$this->student12->id, $this->businessuser1->id]);
+        $approveduserlist = new \core_privacy\local\request\approved_userlist(
+            $coursecontext1,
+            'enrol_bkash',
+            [$this->student12->id, $this->businessuser1->id]
+        );
         provider::delete_data_for_users($approveduserlist);
 
         // After deletion, bkash transactions for student12 in course1 should have been deleted.
@@ -613,8 +632,12 @@ class enrol_bkash_privacy_provider_testcase extends \core_privacy\tests\provider
         );
         $this->assertEqualsCanonicalizing(
             [$this->course2->id, $this->course2->id],
-            $DB->get_fieldset_select('enrol_bkash', 'courseid', 'business = ?',
-                [\core_text::strtolower($this->businessuser1->email)])
+            $DB->get_fieldset_select(
+                'enrol_bkash',
+                'courseid',
+                'business = ?',
+                [\core_text::strtolower($this->businessuser1->email)]
+            )
         );
         $this->assertEquals(
             3,
@@ -640,8 +663,11 @@ class enrol_bkash_privacy_provider_testcase extends \core_privacy\tests\provider
         $transaction = reset($transactions);
 
         // Delete data of businessuser1 in course1.
-        $approveduserlist = new \core_privacy\local\request\approved_userlist($coursecontext1, 'enrol_bkash',
-            [$this->businessuser1->id]);
+        $approveduserlist = new \core_privacy\local\request\approved_userlist(
+            $coursecontext1,
+            'enrol_bkash',
+            [$this->businessuser1->id]
+        );
         provider::delete_data_for_users($approveduserlist);
 
         // After deletion, there should be 2 transactions under the name of businessuser1 and none of them should be in course1.
@@ -674,8 +700,11 @@ class enrol_bkash_privacy_provider_testcase extends \core_privacy\tests\provider
         $this->assertCount(2, $transactions);
 
         // Delete data of receiveruser1 in course1.
-        $approveduserlist = new \core_privacy\local\request\approved_userlist($coursecontext1, 'enrol_bkash',
-            [$this->receiveruser1->id]);
+        $approveduserlist = new \core_privacy\local\request\approved_userlist(
+            $coursecontext1,
+            'enrol_bkash',
+            [$this->receiveruser1->id]
+        );
         provider::delete_data_for_users($approveduserlist);
 
         // After deletion, there should be no transaction under the name of receiveruser1.
@@ -714,16 +743,22 @@ class enrol_bkash_privacy_provider_testcase extends \core_privacy\tests\provider
         // Create enrolment instances.
         $bkashplugin = enrol_get_plugin('bkash');
 
-        $enrolinstanceid = $bkashplugin->add_instance($this->course1,
-            ['roleid' => $studentrole->id, 'courseid' => $this->course1->id]);
+        $enrolinstanceid = $bkashplugin->add_instance(
+            $this->course1,
+            ['roleid' => $studentrole->id, 'courseid' => $this->course1->id]
+        );
         $enrolinstance1 = $DB->get_record('enrol', array('id' => $enrolinstanceid));
 
-        $enrolinstanceid = $bkashplugin->add_instance($this->course2,
-            ['roleid' => $studentrole->id, 'courseid' => $this->course2->id]);
+        $enrolinstanceid = $bkashplugin->add_instance(
+            $this->course2,
+            ['roleid' => $studentrole->id, 'courseid' => $this->course2->id]
+        );
         $enrolinstance2 = $DB->get_record('enrol', array('id' => $enrolinstanceid));
 
-        $enrolinstanceid = $bkashplugin->add_instance($this->course3,
-            ['roleid' => $studentrole->id, 'courseid' => $this->course3->id]);
+        $enrolinstanceid = $bkashplugin->add_instance(
+            $this->course3,
+            ['roleid' => $studentrole->id, 'courseid' => $this->course3->id]
+        );
         $enrolinstance3 = $DB->get_record('enrol', array('id' => $enrolinstanceid));
 
         // Create students.
