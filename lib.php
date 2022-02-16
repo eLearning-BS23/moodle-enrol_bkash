@@ -167,19 +167,7 @@ class enrol_bkash_plugin extends enrol_plugin {
         $userid = $USER->id;
         $item_name = $instance->name;
 
-        $instance_info = [
-            'courseid' => $courseid,
-            'instanceid' => $instanceid,
-            'currency' => $currency,
-            'amount' => $amount,
-            'timecreated' => $timecreated,
-            'timemodified' => $timemodified,
-            'userid' => $userid,
-            'item_name' => $item_name,
-            'config' => $config
-        ];
 
-        $PAGE->requires->js_call_amd("enrol_bkash/bkash_checkout", 'setup', [$instance_info]);
 
         if ($DB->record_exists('user_enrolments', array('userid' => $USER->id, 'enrolid' => $instance->id))) {
             return ob_get_clean();
@@ -242,7 +230,7 @@ class enrol_bkash_plugin extends enrol_plugin {
                 $usercity = $USER->city;
                 $instancename = $this->get_instance_name($instance);
 
-                include($CFG->dirroot . '/enrol/bkash/enrol.html');
+                include($CFG->dirroot . '/enrol/bkash/enrol.php');
             }
         }
         return $OUTPUT->box(ob_get_clean());

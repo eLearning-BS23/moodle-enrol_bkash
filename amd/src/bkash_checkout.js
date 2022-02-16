@@ -26,7 +26,7 @@ define(['jquery', 'core/ajax', 'core/config'], function ($, Ajax, mdlcfg) {
             $(document).ready(function () {
 
                 $.ajax({
-                    url: mdlcfg.wwwroot+ "/enrol/bkash/token.php",
+                    url: mdlcfg.wwwroot + "/enrol/bkash/token.php",
                     type: 'POST',
                     contentType: 'application/json',
                     success: function (data) {
@@ -43,8 +43,8 @@ define(['jquery', 'core/ajax', 'core/config'], function ($, Ajax, mdlcfg) {
                 });
 
                 var paymentConfig = {
-                    createCheckoutURL: mdlcfg.wwwroot+ "/enrol/bkash/createpayment.php",
-                    executeCheckoutURL: mdlcfg.wwwroot+ "/enrol/bkash/executepayment.php",
+                    createCheckoutURL: mdlcfg.wwwroot + "/enrol/bkash/createpayment.php",
+                    executeCheckoutURL: mdlcfg.wwwroot + "/enrol/bkash/executepayment.php",
                 };
 
 
@@ -60,16 +60,17 @@ define(['jquery', 'core/ajax', 'core/config'], function ($, Ajax, mdlcfg) {
                         console.log(request);
 
                         $.ajax({
-                            url: paymentConfig.createCheckoutURL + "?amount=" + paymentRequest.amount + "&token=" + token,
+                            url: paymentConfig.createCheckoutURL + "?amount=" + paymentRequest.amount,
                             type: 'GET',
                             contentType: 'application/json',
                             success: function (data) {
                                 console.log(data);
                                 console.log('got data from create  ..');
                                 console.log('data ::=>');
-                                console.log(JSON.stringify(data));
+                                console.log(data);
 
                                 var obj = JSON.parse(data);
+                                console.log(obj);
 
                                 if (data && obj.paymentID != null) {
                                     paymentID = obj.paymentID;
@@ -90,18 +91,19 @@ define(['jquery', 'core/ajax', 'core/config'], function ($, Ajax, mdlcfg) {
                     executeRequestOnAuthorization: function () {
                         console.log('=> executeRequestOnAuthorization');
                         $.ajax({
-                            url: paymentConfig.executeCheckoutURL + "?paymentID=" + paymentID + "&token=" + token,
+                            url: paymentConfig.executeCheckoutURL + "?paymentID=" + paymentID,
                             type: 'GET',
                             contentType: 'application/json',
                             success: function (data) {
-                                console.log('got data from execute  ..');
-                                console.log('data ::=>');
-                                console.log(JSON.stringify(data));
-
-                                data = JSON.parse(data);
+                                console.log(data);
+                                console.log(data.paymentID);
                                 if (data && data.paymentID != null) {
-                                    alert('[SUCCESS] data : ' + JSON.stringify(data));
-                                    window.location.href = "success.html";
+                                    alert(data.paymentID);
+
+                                    // window.location.href = mdlcfg.wwwroot + "/enrol/bkash/process.php?" + "paymentID=" + data.paymentID + "&amount=" + amount + "&currency=" + currency + "&courseid=" + courseid + "&userid=" + userid + "&instanceid=" + instanceid + "&item_name=" + item_name;
+
+                                    // alert('[SUCCESS] data : ' + JSON.stringify(data));
+                                    // window.location.href = "success.html";
                                 }
                                 else {
                                     bKash.execute().onError();

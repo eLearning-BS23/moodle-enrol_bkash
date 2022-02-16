@@ -1,11 +1,15 @@
 <?php
+
+ini_set('display_errors', '1');
+ini_set('display_startup_errors', '1');
+error_reporting(E_ALL);
+
 require('../../config.php');
-require('./lib.php');
+// require('./lib.php');
+global $SESSION;
 
 $config = get_config('enrol_bkash');
-$createurl  = "https://checkout.sandbox.bka.sh/v1.2.0-beta/checkout/payment/create";
-$paymentID = required_param('paymentID', PARAM_FLOAT);
-$token = required_param('token', PARAM_TEXT);
+$paymentID = required_param('paymentID', PARAM_TEXT);
 
 $executeurl = "https://checkout.sandbox.bka.sh/v1.2.0-beta/checkout/payment/execute/";
 
@@ -13,7 +17,7 @@ $url = curl_init($executeurl.$paymentID);
 
 $header=array(
     'Content-Type:application/json',
-    'authorization:'.$token,
+    'authorization:'.$SESSION->idtoken,
     'x-app-key:'.$config->appkey
 );
 

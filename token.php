@@ -1,13 +1,13 @@
 <?php
 
 require('../../config.php');
+global $SESSION;
 
 
 
 $request_token=bkash_Get_Token();
 $idtoken=$request_token['id_token'];
-
-$token = $idtoken;
+$SESSION->idtoken=$idtoken;
 
 echo $idtoken;
 
