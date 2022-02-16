@@ -22,8 +22,8 @@
  * @author     Brain station 23 ltd.
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-global $DB, $USER;
-?>
+    global $DB, $USER;
+    ?>
 <div align="center">
     <p>
         <?php print_string("paymentrequired") ?>
@@ -32,21 +32,21 @@ global $DB, $USER;
             <?php echo $instancename; ?>
         </strong></p>
     <p><strong>
-            <?php echo get_string("cost") . ": {$instance->currency} {$localisedcost}"; ?>
+            <?php echo get_string("cost").": {$instance->currency} {$localisedcost}"; ?>
         </strong></p>
     <p> <img alt="<?php print_string('bkashaccepted', 'enrol_bkash') ?>"
-    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjqVfXeM4v-2gJsfCe6x9Lxgy5A5QHTjSu4NWusv0Ih9sKlPMIBFBKnPx37e_fuTo7SqQ&usqp=CAU" />
+            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjqVfXeM4v-2gJsfCe6x9Lxgy5A5QHTjSu4NWusv0Ih9sKlPMIBFBKnPx37e_fuTo7SqQ&usqp=CAU" />
     </p>
     <p>
         <?php print_string("paymentinstant") ?>
     </p>
 
     <form method="post" action="<?php echo $CFG->wwwroot; ?>/enrol/bkash/payment.php">
-        <input type="hidden" id="custom" name="custom" value="<?php echo $USER->id . '-' . $course->id . '-' . $instance->id; ?>" />
+        <input type="hidden" id="custom" name="custom" value="<?php echo $USER->id.'-'.$course->id.'-'.$instance->id; ?>" />
         <input type="hidden" id="courseid" name="courseid" value="<?php echo $course->id; ?>" />
         <input type="hidden" id="userid" name="userid" value="<?php echo $USER->id; ?>" />
         <input type="hidden" id="instanceid" name="instanceid" value="<?php echo $instance->id; ?>" />
-        <input type="hidden" value="<?= p($cost) ?>" name="amount" id="amount" required />
+        <input type="hidden" value="<?=p($cost) ?>" name="amount" id="amount" required />
         <input type="hidden" name="currency_code" value="<?php p($instance->currency) ?>" />
         <button class="btn btn-danger">Pay With bKash</button>
     </form>

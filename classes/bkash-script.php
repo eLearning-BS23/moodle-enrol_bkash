@@ -24,12 +24,11 @@
  */
 
 require('../../config.php');
-
-require_login();
 global $SESSION;
 
 ?>
 <div class="wrapper" style="text-align: center">
+    <!-- <img onclick="payment()" alt="bkash" style="height: 70px; cursor: pointer" src="https://scripts.sandbox.bka.sh/resources/img/bkash_payment.png"> -->
     <button id="bKash_button" style="display: none"></button>
 </div>
 
@@ -146,9 +145,9 @@ global $SESSION;
                 data = JSON.parse(data);
 
                 if (data) {
-                    if (data.paymentID != null) { // Success payment.
-                        window.location.href = './process.php?id=' + data.paymentID +
-                        '&userid=' + userid + '&instanceid=' + instanceid + '&courseid=' + courseid;
+                    if (data.paymentID != null) { // success payment
+                        // data = JSON.stringify(data);
+                        window.location.href = './process.php?id=' + data.paymentID + '&userid=' + userid + '&instanceid=' + instanceid + '&courseid=' + courseid;
                         // queryPayment();
                     } else {
                         showErrorMessage(data);

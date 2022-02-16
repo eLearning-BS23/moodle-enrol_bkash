@@ -23,17 +23,15 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 require('../../../config.php');
 
-require_login();
 
 
 include('BkashHelper.php');
 
 $config = get_config('enrol_bkash');
 
-$bkashhelper = new BkashHelper(
+$bkash_helper = new BkashHelper(
     $config->appkey,
     $config->appsecretkey,
     $config->username,
@@ -44,4 +42,4 @@ $bkashhelper = new BkashHelper(
 
 $action = $_GET['action'];
 
-echo $bkashhelper->$action();
+echo $bkash_helper->$action();

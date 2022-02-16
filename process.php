@@ -30,7 +30,7 @@ require_once($CFG->libdir . '/enrollib.php');
 
 require_login();
 
-$paymentid = required_param('id', PARAM_TEXT);
+$paymentID = required_param('id', PARAM_TEXT);
 $instanceid = required_param('instanceid', PARAM_TEXT);
 $courseid = required_param('courseid', PARAM_INT);
 $userid = required_param('userid', PARAM_INT);
@@ -48,7 +48,7 @@ $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
 
 $plugin = enrol_get_plugin('bkash');
 
-$response = queryPayment($paymentid, $config->appkey, $baseurl);
+$response = queryPayment($paymentID,$config->appkey,$baseurl);
 if ($response) {
     $response = json_decode($response);
 
@@ -72,17 +72,16 @@ if ($response) {
 
     $DB->insert_record("enrol_bkash", $data);
     // Enrol user.
-    $plugin->enrol_user($plugininstance, $userid, $plugininstance->roleid, $timestart = 0, $timeend = 0);
+    $plugin->enrol_user($plugininstance, $userid, $plugininstance->roleid, $timestart=0, $timeend=0);
 
-    return redirect($CFG->wwwroot . '/course/view.php?id=' .
-        $courseid, "Successfully enrolled in the course", 'success');
+    return redirect($CFG->wwwroot . '/course/view.php?id=' . $courseid,"Successfully enrolled in the course",'success');
 }
 
-function queryPayment($paymentid, $appkey, $baseurl) {
+function queryPayment($paymentID, $appkey,$baseurl) {
 
     global $SESSION;
 
-    $url = curl_init("$baseurl/checkout/payment/query/" . $paymentid);
+    $url = curl_init("$baseurl/checkout/payment/query/" . $paymentID);
 
     $header = array(
         'Content-Type:application/json',
@@ -93,7 +92,7 @@ function queryPayment($paymentid, $appkey, $baseurl) {
     curl_setopt($url, CURLOPT_CUSTOMREQUEST, "GET");
     curl_setopt($url, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($url, CURLOPT_FOLLOWLOCATION, 1);
-    $resultdata = curl_exec($url);
+    $result_data = curl_exec($url);
     curl_close($url);
-    return $resultdata;
+    return $result_data;
 }

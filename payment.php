@@ -26,7 +26,7 @@
 require('../../config.php');
 require('./classes/BkashHelper.php');
 
-require_login();
+
 $config = get_config('enrol_bkash');
 
 $bkash_helper = new BkashHelper(
@@ -53,13 +53,11 @@ $custom = required_param('custom', PARAM_TEXT);
     <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous">
     </script>
     <?php
-    if ($config->paymentmode == 'live') {
+    if($config->paymentmode == 'live'){
         echo '<script id="myScript"
         src="https://scripts.pay.bka.sh/versions/1.2.0-beta/checkout/bKash-checkout.js"></script>';
-    } else {
-        echo '<script id="myScript"
-        src="https://scripts.sandbox.bka.sh/versions/1.1.0-beta/checkout/bKash-checkout-sandbox.js"
-        ></script>';
+    }else{
+        echo '<script id="myScript" src="https://scripts.sandbox.bka.sh/versions/1.1.0-beta/checkout/bKash-checkout-sandbox.js"></script>';
     }
 
     ?>

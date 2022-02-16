@@ -26,35 +26,13 @@
 
 
 class BkashHelper {
-    // BKash Merchant API Information.
+    // bKash Merchant API Information
 
-    /**
-     * @var string API Key.
-     */
     private $appkey;
-
-    /**
-     * @var string API Secret.
-     */
     private $appsecret;
-
-    /**
-     * @var string User name.
-     */
     private $username;
-
-    /**
-     * @var string Password.
-     */
     private $password;
-
-    /**
-     * @var string Payment mode (live or test).
-     */
     private $paymentmode;
-    /**
-     * @var string Payment mode (live or test).
-     */
     private $baseurl;
 
 
@@ -74,15 +52,14 @@ class BkashHelper {
 
     public function getToken() {
         require('../../../config.php');
-        require_login();
         global $SESSION;
-        $posttoken = array(
+        $post_token = array(
             'app_key' => $this->appkey,
             'app_secret' => $this->appsecret
         );
 
         $url = curl_init("$this->baseurl/checkout/token/grant");
-        $posttoken = json_encode($posttoken);
+        $post_token = json_encode($post_token);
         $header = array(
             'Content-Type:application/json',
             "password:$this->password",
@@ -92,12 +69,12 @@ class BkashHelper {
         curl_setopt($url, CURLOPT_HTTPHEADER, $header);
         curl_setopt($url, CURLOPT_CUSTOMREQUEST, "POST");
         curl_setopt($url, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($url, CURLOPT_POSTFIELDS, $posttoken);
+        curl_setopt($url, CURLOPT_POSTFIELDS, $post_token);
         curl_setopt($url, CURLOPT_FOLLOWLOCATION, 1);
-        $resultdata = curl_exec($url);
+        $result_data = curl_exec($url);
         curl_close($url);
 
-        $response = json_decode($resultdata, true);
+        $response = json_decode($result_data, true);
 
         if (array_key_exists('msg', $response)) {
             return json_encode($response);
@@ -107,8 +84,8 @@ class BkashHelper {
     }
 
     public function createPayment() {
-        global $SESSION, $DB;
-        $courseid = required_param('courseid', PARAM_INT);
+        global $SESSION,$DB;
+        $courseid= required_param('courseid', PARAM_INT);
 
         $plugininstance = $DB->get_record("enrol", array("enrol" => 'bkash', "status" => 0, 'courseid' => $courseid));
         if ((string)$plugininstance->cost != (string)$SESSION->finalamount) {
@@ -123,7 +100,7 @@ class BkashHelper {
         $_POST['merchantInvoiceNumber'] = uniqid();
 
         $url = curl_init("$this->baseurl/checkout/payment/create");
-        $requestdatajson = json_encode($_POST);
+        $request_data_json = json_encode($_POST);
         $header = array(
             'Content-Type:application/json',
             "authorization: $SESSION->idtoken",
@@ -133,21 +110,21 @@ class BkashHelper {
         curl_setopt($url, CURLOPT_HTTPHEADER, $header);
         curl_setopt($url, CURLOPT_CUSTOMREQUEST, "POST");
         curl_setopt($url, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($url, CURLOPT_POSTFIELDS, $requestdatajson);
+        curl_setopt($url, CURLOPT_POSTFIELDS, $request_data_json);
         curl_setopt($url, CURLOPT_FOLLOWLOCATION, 1);
         curl_setopt($url, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
-        $resultdata = curl_exec($url);
+        $result_data = curl_exec($url);
         curl_close($url);
 
-        return $resultdata;
+        return $result_data;
     }
 
     public function executePayment() {
         global $SESSION;
 
-        $paymentid = $_POST['paymentID'];
+        $paymentID = $_POST['paymentID'];
 
-        $url = curl_init("$this->baseurl/checkout/payment/execute/" . $paymentid);
+        $url = curl_init("$this->baseurl/checkout/payment/execute/" . $paymentID);
         $header = array(
             'Content-Type:application/json',
             "authorization:$SESSION->idtoken",
@@ -158,20 +135,19 @@ class BkashHelper {
         curl_setopt($url, CURLOPT_CUSTOMREQUEST, "POST");
         curl_setopt($url, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($url, CURLOPT_FOLLOWLOCATION, 1);
-        $resultdata = curl_exec($url);
+        $result_data = curl_exec($url);
         curl_close($url);
 
-        return $resultdata;
+        return $result_data;
     }
 
     public function queryPayment() {
         require('../../../config.php');
-        require_login();
         global $SESSION;
 
-        $paymentid = $_GET['paymentID'];
+        $paymentID = $_GET['paymentID'];
 
-        $url = curl_init("$this->baseurl/checkout/payment/query/" . $paymentid);
+        $url = curl_init("$this->baseurl/checkout/payment/query/" . $paymentID);
         $header = array(
             'Content-Type:application/json',
             "authorization:$SESSION->idtoken",
@@ -182,17 +158,16 @@ class BkashHelper {
         curl_setopt($url, CURLOPT_CUSTOMREQUEST, "GET");
         curl_setopt($url, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($url, CURLOPT_FOLLOWLOCATION, 1);
-        $resultdata = curl_exec($url);
+        $result_data = curl_exec($url);
         curl_close($url);
 
-        return $resultdata;
+        return $result_data;
     }
 
-    public function searchTransaction($trxid) {
+    public function searchTransaction($trxID) {
         require('../../../config.php');
-        require_login();
         global $SESSION;
-        $url = curl_init("$this->baseurl/checkout/payment/search/" . $trxid);
+        $url = curl_init("$this->baseurl/checkout/payment/search/" . $trxID);
 
         $header = array(
             'Content-Type:application/json',
@@ -204,9 +179,40 @@ class BkashHelper {
         curl_setopt($url, CURLOPT_CUSTOMREQUEST, "GET");
         curl_setopt($url, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($url, CURLOPT_FOLLOWLOCATION, 1);
-        $resultdata = curl_exec($url);
+        $result_data = curl_exec($url);
         curl_close($url);
 
-        return $resultdata;
+        return $result_data;
     }
+
+    public static function paymentSuccess() {
+        require('../../../config.php');
+        require('../../../lib/setup.php');
+        require_once("../lib.php");
+        global $DB, $CFG;
+        require_once($CFG->libdir.'/enrollib.php');
+        require_once($CFG->libdir . '/filelib.php');
+
+        global $DB;
+
+        $plugin = enrol_get_plugin('stripepayment');
+
+        $data = new stdClass();
+        $data->userid = (int)$_POST['arr']['userid'];
+        $data->courseid = $_POST['arr']['courseid'];
+        $data->payment_status = $_POST['arr']['payment_status'];
+        $data->txn_id = $_POST['arr']['txn_id'];
+        $data->item_name = $_POST['arr']['item_name'];
+        $data->instanceid = $_POST['arr']['instanceid'];
+
+
+
+
+        $DB->insert_record("enrol_bkash", $data);
+        $output = 'success';
+        return $output;
+    }
+
+
+
 }
