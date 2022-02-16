@@ -26,7 +26,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'enrol_bkash';    // Full name of the plugin (used for diagnostics).
-$plugin->version = 2021123001;        // The current plugin version (Date: YYYYMMDDXX).
-$plugin->release = 'v1.0.3';
+$plugin->version = 2021123002;        // The current plugin version (Date: YYYYMMDDXX).
+$plugin->release = 'v1.0.4';
 $plugin->requires = 2020061509;        // Requires this Moodle version.
 $plugin->maturity = MATURITY_STABLE;

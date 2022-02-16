@@ -1,11 +1,35 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * bkash enrolment plugin version specification.
+ *
+ * @package    enrol_bkash
+ * @copyright  2021 Brain station 23 ltd.
+ * @author     Brain station 23 ltd.
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 
 require('../../config.php');
 global $SESSION;
 
 ?>
 <div class="wrapper" style="text-align: center">
-    <img onclick="payment()" alt="bkash" style="height: 70px; cursor: pointer" src="https://scripts.sandbox.bka.sh/resources/img/bkash_payment.png">
+    <!-- <img onclick="payment()" alt="bkash" style="height: 70px; cursor: pointer" src="https://scripts.sandbox.bka.sh/resources/img/bkash_payment.png"> -->
     <button id="bKash_button" style="display: none"></button>
 </div>
 
@@ -62,7 +86,7 @@ global $SESSION;
         paymentRequest: {
             amount: '<?php echo $SESSION->finalamount ?>', //max two decimal points allowed
             intent: 'sale',
-            token: token,
+            courseid: courseid,
         },
 
         createRequest: function(request) {
@@ -84,7 +108,7 @@ global $SESSION;
         // Amount already checked and verified by the controller
         // because of createRequest function finds amount from this request
         request['amount'] = <?php echo $SESSION->finalamount ?>; // max two decimal points allowed
-        request['token'] = token;
+        request['courseid'] = courseid;
         $.ajax({
             url: 'classes/api-handle.php?action=createPayment',
             type: 'POST',
@@ -116,8 +140,7 @@ global $SESSION;
             type: 'POST',
             dataType: "text",
             data: {
-                "paymentID": paymentID,
-                'token': token
+                "paymentID": paymentID
             },
             success: function(data) {
                 data = JSON.parse(data);
@@ -125,7 +148,8 @@ global $SESSION;
                 if (data) {
                     if (data.paymentID != null) { // success payment
                         // data = JSON.stringify(data);
-                        queryPayment();
+                        window.location.href = './process.php?id=' + data.paymentID + '&userid=' + userid + '&instanceid=' + instanceid + '&courseid=' + courseid;
+                        // queryPayment();
                     } else {
                         showErrorMessage(data);
                         bKash.execute().onError();
