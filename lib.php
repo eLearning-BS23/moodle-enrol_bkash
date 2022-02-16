@@ -242,7 +242,7 @@ class enrol_bkash_plugin extends enrol_plugin {
                 $usercity = $USER->city;
                 $instancename = $this->get_instance_name($instance);
 
-                include($CFG->dirroot . '/enrol/bkash/enrol.html');
+                include($CFG->dirroot . '/enrol/bkash/enrol.php');
             }
         }
         return $OUTPUT->box(ob_get_clean());

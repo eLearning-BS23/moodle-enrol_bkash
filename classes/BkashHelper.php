@@ -1,4 +1,29 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * bkash enrolment plugin version specification.
+ *
+ * @package    enrol_bkash
+ * @copyright  2021 Brain station 23 ltd.
+ * @author     Brain station 23 ltd.
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+
 
 class BkashHelper {
     // bKash Merchant API Information
@@ -59,26 +84,26 @@ class BkashHelper {
     }
 
     public function createPayment() {
-        global $SESSION;
+        global $SESSION,$DB;
+        $courseid= required_param('courseid', PARAM_INT);
 
-        if ((string)$_POST['amount'] != (string)$SESSION->finalamount) {
+        $plugininstance = $DB->get_record("enrol", array("enrol" => 'bkash', "status" => 0, 'courseid' => $courseid));
+        if ((string)$plugininstance->cost != (string)$SESSION->finalamount) {
             return json_encode([
                 'errorMessage' => 'Amount Mismatch',
                 'errorCode' => 2006
             ]);
         }
 
-        $token = $_POST["token"];
-
         $_POST['intent'] = 'sale';
-        $_POST['currency'] = 'BDT';
+        $_POST['currency'] = $plugininstance->currency;
         $_POST['merchantInvoiceNumber'] = uniqid();
 
         $url = curl_init("$this->baseurl/checkout/payment/create");
         $request_data_json = json_encode($_POST);
         $header = array(
             'Content-Type:application/json',
-            "authorization: $token",
+            "authorization: $SESSION->idtoken",
             "x-app-key: $this->appkey"
         );
 
@@ -98,12 +123,11 @@ class BkashHelper {
         global $SESSION;
 
         $paymentID = $_POST['paymentID'];
-        $token = $_POST['token'];
 
         $url = curl_init("$this->baseurl/checkout/payment/execute/" . $paymentID);
         $header = array(
             'Content-Type:application/json',
-            "authorization:$token",
+            "authorization:$SESSION->idtoken",
             "x-app-key:$this->appkey"
         );
 
@@ -163,11 +187,18 @@ class BkashHelper {
 
     public static function paymentSuccess() {
         require('../../../config.php');
+        require('../../../lib/setup.php');
+        require_once("../lib.php");
+        global $DB, $CFG;
+        require_once($CFG->libdir.'/enrollib.php');
+        require_once($CFG->libdir . '/filelib.php');
 
         global $DB;
 
+        $plugin = enrol_get_plugin('stripepayment');
+
         $data = new stdClass();
-        $data->userid = $_POST['arr']['userid'];
+        $data->userid = (int)$_POST['arr']['userid'];
         $data->courseid = $_POST['arr']['courseid'];
         $data->payment_status = $_POST['arr']['payment_status'];
         $data->txn_id = $_POST['arr']['txn_id'];
@@ -175,8 +206,13 @@ class BkashHelper {
         $data->instanceid = $_POST['arr']['instanceid'];
 
 
+
+
         $DB->insert_record("enrol_bkash", $data);
         $output = 'success';
         return $output;
     }
+
+
+
 }
